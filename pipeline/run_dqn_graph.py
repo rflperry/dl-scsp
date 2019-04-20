@@ -6,13 +6,12 @@ import random
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.layers as layers
-
 import dqn_graph_model as dqn
 from dqn_utils import *
-from atari_wrappers import *
-from knapsack_env import *
-# import Q_function_graph_model
-import Q_function_graph_model2 as Q_function_graph_model
+#from atari_wrappers import *
+#from knapsack_env import *
+# import Q_function
+import Q_function as Q_function_graph_model
 import mvc_env
 
 
@@ -21,6 +20,7 @@ def graph_learn(env, num_timesteps, q_func):
     num_iterations = float(num_timesteps) / 4.0
 
     lr_multiplier = 1.0
+    # From dqn_utils
     lr_schedule = PiecewiseSchedule([
                                          (0,                   1e-4 * lr_multiplier),
                                          (num_iterations / 10, 1e-4 * lr_multiplier),
@@ -33,6 +33,7 @@ def graph_learn(env, num_timesteps, q_func):
         lr_schedule=lr_schedule
     )
 
+    # TODO we want a stopping criterion I assume
     def stopping_criterion(env, t):
         # notice that here t is the number of steps of the wrapped env,
         # which is different from the number of steps in the underlying env
@@ -68,7 +69,7 @@ def graph_learn(env, num_timesteps, q_func):
     )
     env.close()
 
-
+# TODO change benchmark, not gym but rather our own max_timesteps (from dai?)
 def main():
     # Get Atari games.
     benchmark = gym.benchmark_spec('Atari40M')
