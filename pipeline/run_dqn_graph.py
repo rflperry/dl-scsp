@@ -72,15 +72,17 @@ def graph_learn(env, num_timesteps, q_func):
 # TODO change benchmark, not gym but rather our own max_timesteps (from dai?)
 def main():
     # Get Atari games.
-    benchmark = gym.benchmark_spec('Atari40M')
+    #benchmark = gym.benchmark_spec('Atari40M')
 
     # Change the index to select a different game.
-    task = benchmark.tasks[2]
+    #task = benchmark.tasks[2]
 
     # Run training
     env = mvc_env.MVC_env(7)
 
-    graph_learn(env, num_timesteps=task.max_timesteps,
+    num_timesteps = 2500000
+    
+    graph_learn(env, num_timesteps=num_timesteps,
                 q_func=Q_function_graph_model.Q_func)
 
 if __name__ == "__main__":
