@@ -21,12 +21,10 @@ def graph_learn(env, num_timesteps, q_func):
 
     lr_multiplier = 1.0
     # From dqn_utils
-    lr_schedule = PiecewiseSchedule([
-                                         (0,                   1e-4 * lr_multiplier),
-                                         (num_iterations / 10, 1e-4 * lr_multiplier),
-                                         (num_iterations / 2,  5e-5 * lr_multiplier),
-                                    ],
-                                    outside_value=5e-5 * lr_multiplier)
+    lr_schedule = LinearSchedule(schedule_timesteps = num_iterations, 
+                                 final_p = 0.0, 
+                                 initial_p=1.0)
+
     optimizer = dqn.OptimizerSpec(
         constructor=tf.train.AdamOptimizer,
         kwargs=dict(epsilon=1e-4),
@@ -39,13 +37,9 @@ def graph_learn(env, num_timesteps, q_func):
         # which is different from the number of steps in the underlying env
         return False
 
-    exploration_schedule = PiecewiseSchedule(
-        [
-            (0, 1.0),
-            (1e6, 0.1),
-            (num_iterations / 2, 0.01),
-        ], outside_value=0.01
-    )
+    exploration_schedule = LinearSchedule(schedule_timesteps = num_iterations, 
+                                 final_p = 0.0, 
+                                 initial_p=1.0)
 
     dqn.learn(
         env,
@@ -80,7 +74,7 @@ def main():
     # Run training
     env = mvc_env.MVC_env(7)
 
-    num_timesteps = 2500000
+    num_timesteps = 1000
     
     graph_learn(env, num_timesteps=num_timesteps,
                 q_func=Q_function_graph_model.Q_func)
