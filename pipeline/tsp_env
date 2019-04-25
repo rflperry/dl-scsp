@@ -1,34 +1,46 @@
 import numpy as np
 import networkx as nx
 
-class MVC_env:
-    def __init__(self, number_nodes, p = 0.15, replay_penalty=0):
-        self.number_nodes = number_nodes
+class TSP_env:
+    def __init__(self, p = 0.15, replay_penalty=0, data, adjacencies):
+        self.data = data #we need dish
         self.p = p
-        self.state_shape = [self.number_nodes]
-        self.num_actions = self.number_nodes
-        self.env_name = 'MVC'
+        self.env_name = 'TSP'
         self.replay_penalty = replay_penalty
+        self.ind = 0
+        
+        self.graph = self.getGraph()
+        self.num_nodes = self.graph[0]
+        self.state_shape = [self.num_nodes]
+        self.num_actions = self.num_nodes
 
+
+    def getGraph(self):
+        return self.data(self.ind)
+    
+    def getAdj_mat(self.graph)
+        #@JOANNA...
+        return self.adjacency_matrix(self.ind)
+    
     def reset(self):
         self.acc_reward = 0
-        self.graph = nx.erdos_renyi_graph(n = self.number_nodes, p = self.p)
-        self.nodes = list(self.graph.nodes)
-        self.edges = list(self.graph.edges)
+        self.graph = self.getGraph(self.ind)
+        #self.graph = nx.erdos_renyi_graph(n = self.number_nodes, p = self.p)
+        #self.nodes = list(self.graph.nodes)
+        #self.edges = list(self.graph.edges)
         self.state = np.zeros(self.number_nodes)
-        self.adjacency_matrix = nx.to_numpy_matrix(self.graph)
+        self.adjacency_matrix = self.adjacency_matrix(self.ind)
         self.weight_matrix = self.adjacency_matrix
-
+        self.ind += 1
+        
         if len(self.edges) == 0:
             self.reset()
         return self.state
 
     def is_done(self, state):
         done = True
-        for e in self.edges:
-            if state[e[0]] == 0 and state[e[1]] == 0:
-                done = False
-
+        if np.isin(0, self.state):
+            done = False
         return done
 
     def step(self, action):

@@ -70,28 +70,19 @@ def graph_learn(sess, env, num_timesteps, q_func):
 
 
 def main():
-    testResults = []
-    testApproxRatios = []
     # Get Atari games.(do we need this??)
     benchmark = gym.benchmark_spec('Atari40M')
 
     # Change the index to select a different game.
     task = benchmark.tasks[2]
     
-    #TODO: THROW IN SOME DATA (TRAIN AND TEST) HERE
-    #TODO: AND SOME ADJACENCIES
-    
     with tf.Session() as sess:
         sess.run(initialize_all_variables())
         # Run training
-        env = mvc_env.MVC_env(data, adjacencies)
+        env = mvc_env.MVC_env(7)
 
         graph_learn(sess, env, num_timesteps=task.max_timesteps,
                     q_func=Q_function_graph_model.Q_func)
-        for testGraph in testSet:
-            testResults.append(dqn.test(sess, env, testGraph))
-        np.array(testResults)
-        np.save(testResults)
-            
+
 if __name__ == "__main__":
     main()
