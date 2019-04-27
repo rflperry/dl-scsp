@@ -79,7 +79,7 @@ def main():
     with tf.Session() as sess:
         sess.run(initialize_all_variables())
         # Run training
-        env = mvc_env.MVC_env(7)
+        env = tsp_env.TSP_env(7)
 
         graph_learn(sess, env, num_timesteps=task.max_timesteps,
                     q_func=Q_function_graph_model.Q_func)

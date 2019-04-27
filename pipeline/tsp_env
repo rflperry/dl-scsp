@@ -4,13 +4,14 @@ import networkx as nx
 class TSP_env:
     def __init__(self, p = 0.15, replay_penalty=0, data, adjacencies):
         self.data = data #we need dish
+        self.adjacency_matrices = adjacencies
         self.p = p
         self.env_name = 'TSP'
         self.replay_penalty = replay_penalty
         self.ind = 0
         
         self.graph = self.getGraph()
-        self.num_nodes = self.graph[0]
+        self.num_nodes = self.graph.shape[0]
         self.state_shape = [self.num_nodes]
         self.num_actions = self.num_nodes
         self.adjacencies = self.getAdj_mat()
@@ -19,7 +20,7 @@ class TSP_env:
         return self.data(self.ind)
     
     def getAdj_mat(self)
-        return self.adjacency_matrix(self.ind)
+        return self.adjacency_matrices(self.ind)
     
     def reset(self):
         self.acc_reward = 0
@@ -28,13 +29,14 @@ class TSP_env:
         #self.nodes = list(self.graph.nodes)
         #self.edges = list(self.graph.edges)
         self.state = np.zeros(self.num_nodes())
-        self.adjacency_matrix = self.adjacency_matrix()
+        self.adjacency_matrix = self.getAdj_mat()
         self.weight_matrix = self.adjacency_matrix
         self.ind += 1
-        
-        if len(self.edges) == 0:
-            self.reset()
-        return self.state
+       
+        #nope
+        #if len(self.edges) == 0:
+        #    self.reset()
+        #return self.state
 
     def is_done(self, state):
         done = True
