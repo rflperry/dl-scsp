@@ -13,23 +13,22 @@ class TSP_env:
         self.num_nodes = self.graph[0]
         self.state_shape = [self.num_nodes]
         self.num_actions = self.num_nodes
-
+        self.adjacencies = self.getAdj_mat()
 
     def getGraph(self):
         return self.data(self.ind)
     
-    def getAdj_mat(self.graph)
-        #@JOANNA...
+    def getAdj_mat(self)
         return self.adjacency_matrix(self.ind)
     
     def reset(self):
         self.acc_reward = 0
-        self.graph = self.getGraph(self.ind)
+        self.graph = self.getGraph()
         #self.graph = nx.erdos_renyi_graph(n = self.number_nodes, p = self.p)
         #self.nodes = list(self.graph.nodes)
         #self.edges = list(self.graph.edges)
-        self.state = np.zeros(self.number_nodes)
-        self.adjacency_matrix = self.adjacency_matrix(self.ind)
+        self.state = np.zeros(self.num_nodes())
+        self.adjacency_matrix = self.adjacency_matrix()
         self.weight_matrix = self.adjacency_matrix
         self.ind += 1
         
