@@ -11,6 +11,7 @@ from dqn_utils import *
 import replay_buffer_graph
 import time
 
+
 OptimizerSpec = namedtuple("OptimizerSpec", ["constructor", "kwargs", "lr_schedule"])
 
 """
@@ -216,9 +217,6 @@ def learn(env,
             break
 
         ### 2. Step the env and store the transition
-        import random
-        from numpy import array
-
         if done:
             observations = [env.reset()]
 
@@ -232,11 +230,13 @@ def learn(env,
             action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])
             r = random.random()
             if r <= epsilon:
+                # indices of all nodes
                 all_possible_action = list(range(num_actions))
                 # other_actions = [x for x in all_possible_action if x != action]
                 if env.env_name == 'MVC':
                     other_actions = [x for x in all_possible_action if env.state[x] != 1]
                 else:
+                    # All nodes which are not in the solution
                     other_actions = [x for x in all_possible_action if observations[-1][x] != 1]
                 action = np.array(random.choice(other_actions))
         else:
