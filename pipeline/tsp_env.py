@@ -3,14 +3,15 @@ import networkx as nx
 import random
 
 class TSP_env:
-    def __init__(self, replay_penalty=0):
+    def __init__(self, simulate=False, replay_penalty=0):
         #self.data = data #we need dish
         #self.adjacency_matrices = adjacencies
         self.env_name = 'TSP'
         self.replay_penalty = replay_penalty
         self.ind = 0
-        self.graph = self.getGraph()
+        self.simulate = simulate
         self.num_graphs = 100
+        self.graph = self.getGraph()
         #self.adjacency_matrices = adjacencies
         self.number_nodes = len(self.graph)
         self.state_shape = [self.number_nodes]
@@ -18,12 +19,15 @@ class TSP_env:
         #self.adjacencies = self.getAdj_mat()
 
     def getGraph(self):
-        nodes = 10; p = 0.5
-        G = nx.path_graph(nodes,create_using=nx.DiGraph)
-        #G = nx.barabasi_albert_graph(n = nodes, m = int(nodes*p))
-        for i,(u,v,w) in enumerate(G.edges(data=True)):
-            w['weight'] = i#random.randint(0,10)
-        return(G)
+        if self.simulate:
+            nodes = 10
+            G = nx.complete_graph(nodes,create_using=nx.DiGraph)
+            for (u,v,w) in G.edges(data=True):
+                w['weight'] = random.randint(2,10)
+            path = np.arange(nodes); np.random.shuffle(path)
+            for i in range(nodes-1):
+                G.edges[path[i]][path[i+1]]['weight'] = 1
+            return(G)
         #return self.data(self.ind)
     
     def getAdj_mat(self):
