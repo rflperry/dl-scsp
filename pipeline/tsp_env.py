@@ -1,34 +1,46 @@
 import numpy as np
 import networkx as nx
+import random
 
 class TSP_env:
-    def __init__(self, p = 0.15, replay_penalty=0, data, adjacencies):
-        self.data = data #we need dish
-        self.adjacency_matrices = adjacencies
-        self.p = p
+    def __init__(self, replay_penalty=0):
+        #self.data = data #we need dish
+        #self.adjacency_matrices = adjacencies
         self.env_name = 'TSP'
         self.replay_penalty = replay_penalty
         self.ind = 0
-        
         self.graph = self.getGraph()
+        #self.adjacency_matrices = adjacencies
         self.num_nodes = self.graph.shape[0]
         self.state_shape = [self.num_nodes]
         self.num_actions = self.num_nodes
-        self.adjacencies = self.getAdj_mat()
+        #self.adjacencies = self.getAdj_mat()
 
     def getGraph(self):
-        return self.data(self.ind)
+        number_nodes = 10
+        p = 0.5
+        G = nx.barabasi_albert_graph(n = number_nodes, m = number_nodes*p)
+        for (u,v,w) in G.edges(data=True):
+            w['weight'] = random.randint(0,10)
+        return(G)
+        #return self.data(self.ind)
     
-    def getAdj_mat(self)
-        return self.adjacency_matrices(self.ind)
+    def getAdj_mat(self):
+        return(nx.to_numpy_matrix(self.graph))
+        #return self.adjacency_matrices(self.ind)
     
+    def getEmbedding(self):
+        return(nx.laplacian_matrix(self.graph))
+
     def reset(self):
         self.acc_reward = 0
+        # Load Graph
         self.graph = self.getGraph()
-        #self.graph = nx.erdos_renyi_graph(n = self.number_nodes, p = self.p)
-        #self.nodes = list(self.graph.nodes)
-        #self.edges = list(self.graph.edges)
+        self.nodes = list(self.graph.nodes)
+        self.edges = list(self.graph.edges)
+        # State for each node
         self.state = np.zeros(self.num_nodes())
+        self.embedding = self.getEmbedding()
         self.adjacency_matrix = self.getAdj_mat()
         self.weight_matrix = self.adjacency_matrix
         self.ind += 1
@@ -36,8 +48,10 @@ class TSP_env:
         #nope
         #if len(self.edges) == 0:
         #    self.reset()
-        #return self.state
+        
+        return self.state
 
+    # Checks state vector to see if any nodes not connected
     def is_done(self, state):
         done = True
         if np.isin(0, self.state):
@@ -68,3 +82,7 @@ class TSP_env:
     def optimal_solution(self):
         # TODO
         return 0, None
+
+    # TODO?
+    def close(self):
+        return
