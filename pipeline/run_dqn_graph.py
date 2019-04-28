@@ -73,8 +73,8 @@ def main():
 
     #with tf.Session() as sess:
     #    sess.run(initialize_all_variables())
-    env = tsp_env.TSP_env()
-    graph_learn(env, simulate=True, num_timesteps=num_timesteps,
+    env = tsp_env.TSP_env(simulate=True)
+    graph_learn(env, num_timesteps=num_timesteps,
         q_func=Q_function_graph_model.Q_func)
 
 if __name__ == "__main__":
