@@ -39,7 +39,7 @@ class TSP_env:
         self.nodes = list(self.graph.nodes)
         self.edges = list(self.graph.edges)
         # State for each node
-        self.state = np.zeros(self.num_nodes())
+        self.state = np.zeros(self.num_nodes)
         self.embedding = self.getEmbedding()
         self.adjacency_matrix = self.getAdj_mat()
         self.weight_matrix = self.adjacency_matrix
