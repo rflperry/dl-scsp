@@ -35,7 +35,7 @@ def graph_learn(env, num_timesteps, q_func):
     def stopping_criterion(env, t):
         # notice that here t is the number of steps of the wrapped env,
         # which is different from the number of steps in the underlying env
-        return(env.is_done(env.state) and t > num_timesteps)
+        return(env.is_done(env.state) and env.all_graphs_trained())
 
     exploration_schedule = LinearSchedule(schedule_timesteps = num_iterations, 
                                  final_p = 0.0, 
