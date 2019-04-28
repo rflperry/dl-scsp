@@ -47,11 +47,13 @@ class TSP_env:
     def step(self, action):
         if self.state[action] != 1:
             self.state[action] = 1
+            #TODO: calculate reward based on adjmat
             rew = -1
-        else:
-            rew = -self.replay_penalty
+            #moved this inside if loop, because never step to same node
+            self.acc_reward += rew
+        #else:
+        #    rew = -self.replay_penalty
 
-        self.acc_reward += rew
 
         return self.state, rew, self.is_done(self.state)
 
