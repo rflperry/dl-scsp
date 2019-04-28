@@ -15,7 +15,7 @@ import Q_function as Q_function_graph_model
 import tsp_env
 
 
-def graph_learn(sess, env, num_timesteps, q_func):
+def graph_learn(env, num_timesteps, q_func):
     # This is just a rough estimate
     num_iterations = float(num_timesteps) / 4.0
 
