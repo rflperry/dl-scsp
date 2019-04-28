@@ -44,7 +44,8 @@ def learn(env,
           double_DQN=True,
           n_steps_ahead=3,
           learning_rate=1e-3,
-          LOG_EVERY_N_STEPS=10000
+          LOG_EVERY_N_STEPS=10000,
+          burn_in_period=1000
          ):
     """Run Deep Q-learning algorithm.
     You can specify your own convnet using q_func.
@@ -306,14 +307,14 @@ def learn(env,
             
             mean_approx_ratio = 0
             if len(episode_total_rewards) > 0:
-                mean_episode_reward = np.mean(np.array(episode_total_rewards)[-1000:])
-                mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards)[-1000:])
-                mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards)[-1000:])
+                mean_episode_reward = np.mean(np.array(episode_total_rewards)[-burn_in_period:])
+                mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards)[-burn_in_period:])
+                mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards)[-burn_in_period:])
                 if env.env_name == 'TSP':
-                    mean_approx_ratio = np.mean(np.array(episode_total_rewards)[-1000:] /
-                                                np.mean(np.array(episode_total_optimal_rewards)[-1000:]))
+                    mean_approx_ratio = np.mean(np.array(episode_total_rewards)[-burn_in_period:] /
+                                                np.mean(np.array(episode_total_optimal_rewards)[-burn_in_period:]))
 
-            if len(episode_total_rewards) > 1000:
+            if len(episode_total_rewards) > burn_in_period:
                 best_mean_episode_reward = max(best_mean_episode_reward, mean_episode_reward)
 
             if t % LOG_EVERY_N_STEPS == 0 and model_initialized:
