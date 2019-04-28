@@ -26,7 +26,7 @@ class TSP_env:
                 w['weight'] = random.randint(2,10)
             path = np.arange(nodes); np.random.shuffle(path)
             for i in range(nodes-1):
-                G.edges[path[i]][path[i+1]]['weight'] = 1
+                G[path[i]][path[i+1]]['weight'] = 1
             return(G)
         #return self.data(self.ind)
     
