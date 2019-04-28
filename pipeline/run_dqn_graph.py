@@ -69,7 +69,7 @@ def graph_learn(env, num_timesteps, q_func):
 def main():
     # Run training
 
-    num_timesteps = 5000
+    num_timesteps = 10000
 
     #with tf.Session() as sess:
     #    sess.run(initialize_all_variables())

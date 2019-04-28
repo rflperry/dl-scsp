@@ -10,7 +10,7 @@ class TSP_env:
         self.replay_penalty = replay_penalty
         self.ind = 0
         self.simulate = simulate
-        self.num_graphs = 100
+        self.num_graphs = 200
         self.graph = self.getGraph()
         #self.adjacency_matrices = adjacencies
         self.number_nodes = len(self.graph)
