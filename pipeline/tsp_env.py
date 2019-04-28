@@ -11,7 +11,7 @@ class TSP_env:
         self.ind = 0
         self.graph = self.getGraph()
         #self.adjacency_matrices = adjacencies
-        self.num_nodes = self.graph.shape[0]
+        self.num_nodes = len(self.graph)
         self.state_shape = [self.num_nodes]
         self.num_actions = self.num_nodes
         #self.adjacencies = self.getAdj_mat()
@@ -19,7 +19,7 @@ class TSP_env:
     def getGraph(self):
         number_nodes = 10
         p = 0.5
-        G = nx.barabasi_albert_graph(n = number_nodes, m = number_nodes*p)
+        G = nx.barabasi_albert_graph(n = number_nodes, m = int(number_nodes*p))
         for (u,v,w) in G.edges(data=True):
             w['weight'] = random.randint(0,10)
         return(G)

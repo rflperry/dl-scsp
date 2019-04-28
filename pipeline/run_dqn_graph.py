@@ -6,7 +6,7 @@ import random
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.layers as layers
-import dqn_graph_model as dqn
+import dqn_graph_model_v2 as dqn
 from dqn_utils import *
 #from atari_wrappers import *
 #from knapsack_env import *
@@ -41,7 +41,7 @@ def graph_learn(sess, env, num_timesteps, q_func):
                                  final_p = 0.0, 
                                  initial_p=1.0)
 
-    dqn.learn(sess,
+    dqn.learn(
         env,
         q_func=q_func,
         pre_pooling_mlp_layers=2,
@@ -67,12 +67,14 @@ def graph_learn(sess, env, num_timesteps, q_func):
 # TODO change benchmark, not gym but rather our own max_timesteps (from dai?)
 def main():
     # Run training
-    env = tsp_env.TSP_env()
 
     num_timesteps = 100
 
+    #with tf.Session() as sess:
+    #    sess.run(initialize_all_variables())
+    env = tsp_env.TSP_env()
     graph_learn(env, num_timesteps=num_timesteps,
-    q_func=Q_function_graph_model.Q_fun)
+        q_func=Q_function_graph_model.Q_func)
 
 if __name__ == "__main__":
     main()
