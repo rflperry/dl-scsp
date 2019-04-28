@@ -13,12 +13,13 @@ import time
 
 OptimizerSpec = namedtuple("OptimizerSpec", ["constructor", "kwargs", "lr_schedule"])
 
+
 """
 learn slightly modified to pass the task name as an argument
 so that it is easier to record data.
 """
 
-def learn(env,
+def learn(sess, env,
           q_func,
           pre_pooling_mlp_layers,
           post_pooling_mlp_layers,
@@ -184,16 +185,17 @@ def learn(env,
     saver = tf.train.Saver()
 
     # Create session, initialize variables
-    session = tf.InteractiveSession()
+    #DONE: replace sessions with sess
+    #session = tf.InteractiveSession()
     log_files_name = 'DQN_' + str(env.env_name) + \
                      '-lf=' + str(learning_freq) + \
                      '-b=' + str(batch_size) + '-' + \
                      time.strftime('%m-%d-%Y-%H:%M:%S')
 
     writer = tf.summary.FileWriter('/tmp/' + log_files_name,
-                                   session.graph)
+                                   sess.graph)
     tf.global_variables_initializer().run()
-    saver.save(session, '/tmp/saved_models/' + log_files_name)
+    saver.save(sess, '/tmp/saved_models/' + log_files_name)
 
     ###############
     # RUN ENV     #
@@ -225,7 +227,7 @@ def learn(env,
         # Choose action
         if model_initialized:
             epsilon = exploration.value(t)
-            q_values=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
+            q_values=sess.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
                                                         adj_ph: env.adjacency_matrix[None],
                                                         graph_weights_ph: env.weight_matrix[None]})
 
@@ -270,7 +272,7 @@ def learn(env,
             obs_t_batch, adj_batch, graph_weights_batch, act_batch,\
             rew_batch, obs_tp1_batch, done_mask_batch, transition_length_batch = replay_buffer.sample(batch_size)
             if not(model_initialized):
-                initialize_interdependent_variables(session, tf.global_variables(), {
+                initialize_interdependent_variables(sess, tf.global_variables(), {
                             obs_t_ph: obs_t_batch,
                             obs_tp1_ph: obs_tp1_batch,
                         })
@@ -332,3 +334,42 @@ def learn(env,
                 logz.dump_tabular()
 
                 sys.stdout.flush()
+                
+def test(sess, env, observations):
+    # placeholder for current observation
+    obs_t_ph              = tf.placeholder(tf.float32, [None] + list(input_shape))
+    # placeholder for current action
+    act_t_ph              = tf.placeholder(tf.int32, [None], name='act_t_ph')
+    # placeholder for current reward
+    rew_t_ph              = tf.placeholder(tf.float32, [None])
+    # placeholder for next observation (or state)
+    obs_tp1_ph            = tf.placeholder(tf.float32, [None] + list(input_shape))
+    
+    # placeholder for end of episode mask
+    # this value is 1 if the next state corresponds to the end of an episode,
+    # in which case there is no Q-value at the next state; at the end of an
+    # episode, only the current state reward contributes to the target, not the
+    # next state Q-value (i.e. target is just rew_t_ph, not rew_t_ph + gamma * q_tp1)
+    done_mask_ph          = tf.placeholder(tf.float32, [None])
+    transition_length_ph = tf.placeholder(tf.float32, [None])
+
+    # Graphs specific placeholder
+    adj_ph = tf.placeholder(tf.float32, [None, env.number_nodes, env.number_nodes],
+                            name='adj_ph')
+    graph_weights_ph = tf.placeholder(tf.float32,
+                                      [None, env.number_nodes, env.number_nodes],
+                                      name='graph_weights_ph')
+    #DONE: commented this out since model should already be defined
+    # Q network
+    #q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
+    #                    adj=adj_ph,
+    #                    w=graph_weights_ph,
+    #                    p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
+    #                    scope="q_func", reuse=False,
+    #                    pre_pooling_mlp_layers=pre_pooling_mlp_layers,
+    #                    post_pooling_mlp_layers=post_pooling_mlp_layers)
+
+    # construct the replay buffer
+    replay_buffer = replay_buffer_graph.ReplayBuffer(replay_buffer_size, obs_size=input_shape[0],
+                                                     n_nodes=input_shape[0])
+   

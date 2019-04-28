@@ -15,7 +15,7 @@ import Q_function as Q_function_graph_model
 import mvc_env
 
 
-def graph_learn(env, num_timesteps, q_func):
+def graph_learn(sess, env, num_timesteps, q_func):
     # This is just a rough estimate
     num_iterations = float(num_timesteps) / 4.0
 
@@ -41,7 +41,7 @@ def graph_learn(env, num_timesteps, q_func):
                                  final_p = 0.0, 
                                  initial_p=1.0)
 
-    dqn.learn(
+    dqn.learn(sess,
         env,
         q_func=q_func,
         pre_pooling_mlp_layers=2,
@@ -65,19 +65,4 @@ def graph_learn(env, num_timesteps, q_func):
 
 # TODO change benchmark, not gym but rather our own max_timesteps (from dai?)
 def main():
-    # Get Atari games.
-    #benchmark = gym.benchmark_spec('Atari40M')
-
-    # Change the index to select a different game.
-    #task = benchmark.tasks[2]
-
-    # Run training
-    env = mvc_env.MVC_env(7)
-
-    num_timesteps = 1000
-    
-    graph_learn(env, num_timesteps=num_timesteps,
-                q_func=Q_function_graph_model.Q_func)
-
-if __name__ == "__main__":
     main()
