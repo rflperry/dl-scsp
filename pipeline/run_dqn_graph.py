@@ -60,8 +60,8 @@ def graph_learn(env, num_timesteps, q_func):
         double_DQN=True,
         n_steps_ahead=3,
         learning_rate=1e-4,
-        LOG_EVERY_N_STEPS = 10,
-        burn_in_period=1
+        LOG_EVERY_N_STEPS = 200,
+        burn_in_period=10
     )
     env.close()
 
@@ -69,7 +69,7 @@ def graph_learn(env, num_timesteps, q_func):
 def main():
     # Run training
 
-    num_timesteps = 100
+    num_timesteps = 10000
 
     #with tf.Session() as sess:
     #    sess.run(initialize_all_variables())
