@@ -35,6 +35,7 @@ class TSP_env:
 
     def reset(self):
         self.acc_reward = 0
+        self.prior_node = None
         # Load Graph
         self.graph = self.getGraph()
         self.nodes = list(self.graph.nodes)
@@ -66,7 +67,11 @@ class TSP_env:
     def step(self, action):
         if self.state[action] != 1:
             self.state[action] = 1
-            rew = -1
+            if self.prior_node:
+                rew = -self.weight_matrix[action, self.prior_node]
+            else:
+                rew = 0
+            self.prior_node = action
         else:
             rew = -self.replay_penalty
 
@@ -79,10 +84,15 @@ class TSP_env:
 
     def at_random_solution(self):
         temp_state = np.zeros(self.number_nodes)
+        temp_prior = None
+        temp_cost = 0
         while not self.is_done(temp_state):
-            temp_state[np.random.randint(self.number_nodes)] = 1
+            temp_action = np.random.randint(self.number_nodes)
+            temp_state[temp_action] = 1
+            if temp_prior:
+                temp_cost += -self.weight_matrix[temp_prior, temp_action]
 
-        return -np.sum(temp_state), temp_state
+        return temp_cost, temp_state
 
     def optimal_solution(self):
         # TODO

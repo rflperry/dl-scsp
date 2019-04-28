@@ -244,7 +244,7 @@ def learn(env,
         else:
             action = np.array(random.choice(list(range(num_actions))))
         #forcast n-steps
-        next_obs, reward, done = env.step(action)
+        next_obs, reward, done = env.step(action, observations)
         observations.append(next_obs)
 
         if len(observations) > n_steps_ahead:
