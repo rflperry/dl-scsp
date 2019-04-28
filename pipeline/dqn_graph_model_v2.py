@@ -469,7 +469,7 @@ def test(session, env, adjacency_matrix): # writen to look at a single test grap
                                                 np.mean(np.array(episode_total_optimal_rewards)))
 
         if len(episode_total_rewards) > 0:
-            mean_episode_reward = np.mean(np.array(episode_total_rewards)[-1000:])
+            mean_episode_reward = np.mean(np.array(episode_total_rewards)[-burn:])
             mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards)[-1000:])
             mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards)[-1000:])
             if env.env_name == 'TSP':

@@ -60,7 +60,8 @@ def graph_learn(env, num_timesteps, q_func):
         double_DQN=True,
         n_steps_ahead=3,
         learning_rate=1e-4,
-        LOG_EVERY_N_STEPS = 10
+        LOG_EVERY_N_STEPS = 10,
+        burn_in_period=1
     )
     env.close()
 
