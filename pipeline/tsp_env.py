@@ -12,7 +12,7 @@ class TSP_env:
         self.graph = self.getGraph()
         #self.adjacency_matrices = adjacencies
         self.number_nodes = len(self.graph)
-        self.state_shape = [self.num_nodes]
+        self.state_shape = [self.number_nodes]
         self.num_actions = self.number_nodes
         #self.adjacencies = self.getAdj_mat()
 
