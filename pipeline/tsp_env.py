@@ -72,7 +72,7 @@ class TSP_env:
         if self.state[action] != 1:
             self.state[action] = 1
             if self.prior_node:
-                rew = -self.weight_matrix[action, self.prior_node]
+                rew = -self.weight_matrix[self.prior_node, action]
             else:
                 rew = 0
             self.prior_node = action
