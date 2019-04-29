@@ -15,7 +15,7 @@ import Q_function as Q_function_graph_model
 import tsp_env
 
 
-def graph_learn(env, num_timesteps, q_func):
+def graph_learn(env, num_timesteps, q_func, modelfile):
     # This is just a rough estimate
     num_iterations = float(num_timesteps) / 4.0
 
@@ -61,21 +61,35 @@ def graph_learn(env, num_timesteps, q_func):
         n_steps_ahead=3,
         learning_rate=1e-4,
         LOG_EVERY_N_STEPS = 1000,
-        burn_in_period=50
+        burn_in_period=50, filename=modelfile
     )
     env.close()
 
-# TODO change benchmark, not gym but rather our own max_timesteps (from dai?)
+
+import argparse
+
 def main():
-    # Run training
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--train", help="true to train the model, false if test",
+                        action="store_true")
+    parser.add_argument("modelfile", type=str, help="folder name to save models")
+    args = parser.parse_args()
+    
     num_timesteps = 100000
+    modelfile = args.modelfile
+    if args.train:
+        with tf.Session() as sess:
+            sess.run(initialize_all_variables())
+            env = tsp_env.TSP_env(simulate=True)
+            graph_learn(env, num_timesteps=num_timesteps,
+            q_func=Q_function_graph_model.Q_func, modelfile)
 
-    #with tf.Session() as sess:
-    #    sess.run(initialize_all_variables())
-    env = tsp_env.TSP_env(simulate=True)
-    graph_learn(env, num_timesteps=num_timesteps,
-        q_func=Q_function_graph_model.Q_func)
-
+    else:
+        with tf.Session() as sess:    
+            saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
+            saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
+            env = tsp_env.TSP_env(simulate=True)
+            test(sess, env, ?)
+    
 if __name__ == "__main__":
-    main()
+    main()   

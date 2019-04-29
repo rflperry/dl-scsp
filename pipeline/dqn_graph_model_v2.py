@@ -45,7 +45,8 @@ def learn(env,
           n_steps_ahead=3,
           learning_rate=1e-3,
           LOG_EVERY_N_STEPS=10000,
-          burn_in_period=1000
+          burn_in_period=1000,
+          filename
          ):
     """Run Deep Q-learning algorithm.
     You can specify your own convnet using q_func.
@@ -188,10 +189,12 @@ def learn(env,
 
     # Create session, initialize variables
     session = tf.InteractiveSession()
-    log_files_name = 'DQN_' + str(env.env_name) +                      '-lf=' + str(learning_freq) +                      '-b=' + str(batch_size) + '-' +                      time.strftime('%m-%d-%Y-%H:%M:%S')
+    log_files_name = filename
+    #log_files_name = 'DQN_' + str(env.env_name) +                      '-lf=' + str(learning_freq) +                      '-b=' + str(batch_size) + '-' +                      time.strftime('%m-%d-%Y-%H:%M:%S')
 
-    writer = tf.summary.FileWriter('/tmp/' + log_files_name,
-                                   session.graph)
+    #writer = tf.summary.FileWriter('/tmp/' + log_files_name,
+    #                               session.graph)
+    
     tf.global_variables_initializer().run()
     saver.save(session, '/tmp/saved_models/' + log_files_name)
 
