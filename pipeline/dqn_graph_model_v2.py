@@ -198,7 +198,7 @@ def learn(env,
     # Create session, initialize variables
     session = tf.InteractiveSession()
     log_files_name = filename
-    #log_files_name = 'DQN_' + str(env.env_name) +                      '-lf=' + str(learning_freq) +                      '-b=' + str(batch_size) + '-' +                      time.strftime('%m-%d-%Y-%H:%M:%S')
+    #log_files_name = 'DQN_' + str(env.env_name) + '-lf=' + str(learning_freq) + '-b=' + str(batch_size) + '-' + time.strftime('%m-%d-%Y-%H:%M:%S')
 
     #writer = tf.summary.FileWriter('/tmp/' + log_files_name,
     #                               session.graph)
