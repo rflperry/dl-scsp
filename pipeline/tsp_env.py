@@ -30,7 +30,7 @@ class TSP_env:
                 G[path[i]][path[i+1]]['weight'] = 1
             return(G)
         else:
-
+            return
         #return self.data(self.ind)
     
     def getAdj_mat(self):
