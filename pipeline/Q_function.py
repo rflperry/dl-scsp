@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-def Q_func(x, adj, w, embed, p, T, initialization_stddev,
+def Q_func(x, adj, w, p, T, initialization_stddev,
            scope, reuse=False, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
     """
     x:      B x n_vertices.
