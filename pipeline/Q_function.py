@@ -67,8 +67,8 @@ def Q_func(x, adj, w, p, T, initialization_stddev,
             else:
                 # Should be a NxK matrix for embedding of matrix K
                 # Transpose to KxN
-                mu = np.transpose(embed)
-                #mu = tf.nn.relu(tf.add(mu_part1, mu_part3_1, name='mu_' + str(t)))
+                #mu = embed
+                mu = tf.nn.relu(tf.add(mu_part1, mu_part3_1, name='mu_' + str(t)))
 
         # Define the Qs
         Q_part1 = tf.einsum('kl,ivk->ivl', theta6, tf.einsum('ivu,iuk->ivk', adj, mu))
