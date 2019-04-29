@@ -69,19 +69,9 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
 
 import argparse
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--train", help="true to train the model, false if test",
-                        action="store_true")
-    parser.add_argument("-s", "--simulate", help="true if run on simulated data, false for real data",
-                        action="store_true")
-    parser.add_argument("modelfile", type=str, help="folder name to save models")
-    args = parser.parse_args()
-    
+def main(train=False,simulate=True,modelfile=None):
     num_timesteps = 100000
-    modelfile = args.modelfile
-    simulate = args.simulate
-    if args.train:
+    if train:
         with tf.Session() as sess:
             sess.run(initialize_all_variables())
             env = tsp_env.TSP_env(simulate=simulate)
@@ -96,4 +86,14 @@ def main():
             #test(sess, env, ?)
     
 if __name__ == "__main__":
-    main()   
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--train", help="true to train the model, false if test",
+                        action="store_true")
+    parser.add_argument("-s", "--simulate", help="true if run on simulated data, false for real data",
+                        action="store_true")
+    parser.add_argument("modelfile", type=str, help="file name to save models")
+    args = parser.parse_args()
+    
+    main(args.train,
+        args.simulate,
+        args.modelfile)   
