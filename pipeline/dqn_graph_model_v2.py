@@ -48,7 +48,7 @@ def learn(env,
           learning_rate=1e-3,
           LOG_EVERY_N_STEPS=10000,
           burn_in_period=1000,
-          filename
+          filename='temp'
          ):
     """Run Deep Q-learning algorithm.
     You can specify your own convnet using q_func.
