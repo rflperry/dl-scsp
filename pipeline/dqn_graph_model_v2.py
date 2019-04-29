@@ -16,6 +16,8 @@ from collections import namedtuple
 from dqn_utils import *
 import replay_buffer_graph
 import time
+import random
+from numpy import array
 
 OptimizerSpec = namedtuple("OptimizerSpec", ["constructor", "kwargs", "lr_schedule"])
 
@@ -129,7 +131,7 @@ def learn(env,
                                       [None, env.number_nodes, env.number_nodes],
                                       name='graph_weights_ph')
     embedding_ph = tf.placeholder(tf.float32,
-                                      [None, env.number_nodes, env.embedding.shape()[1]],
+                                      [None, env.number_nodes, env.embedding_dimension],
                                       name='embedding_ph')
     # Q network
     q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
@@ -224,8 +226,6 @@ def learn(env,
             break
 
         ### 2. Step the env and store the transition
-        import random
-        from numpy import array
 
         if done:
             observations = [env.reset()]
@@ -236,7 +236,8 @@ def learn(env,
             # learning a policy, q vals gives me that policy
             q_values=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
                                                         adj_ph: env.adjacency_matrix[None],
-                                                        graph_weights_ph: env.weight_matrix[None]})
+                                                        graph_weights_ph: env.weight_matrix[None],
+                                                        embedding_ph: env.embedding[None]})
 
             # using function to pick an action
             action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])

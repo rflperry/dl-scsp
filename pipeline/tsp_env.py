@@ -14,6 +14,7 @@ class TSP_env:
         self.graph = self.getGraph()
         #self.adjacency_matrices = adjacencies
         self.number_nodes = len(self.graph)
+        self.embedding_dimension = self.getEmbedding().shape[1]
         self.state_shape = [self.number_nodes]
         self.num_actions = self.number_nodes
         #self.adjacencies = self.getAdj_mat()
@@ -28,6 +29,8 @@ class TSP_env:
             for i in range(nodes-1):
                 G[path[i]][path[i+1]]['weight'] = 1
             return(G)
+        else:
+
         #return self.data(self.ind)
     
     def getAdj_mat(self):
