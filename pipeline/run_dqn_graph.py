@@ -72,11 +72,11 @@ import argparse
 def main(train=False,simulate=True,modelfile=None):
     num_timesteps = 100000
     if train:
-        with tf.Session() as sess:
-            sess.run(initialize_all_variables())
-            env = tsp_env.TSP_env(simulate=simulate)
-            graph_learn(env, num_timesteps=num_timesteps,
-            q_func=Q_function_graph_model.Q_func, modelfile=modelfile)
+        #with tf.Session() as sess:
+            #sess.run(initialize_all_variables())
+        env = tsp_env.TSP_env(simulate=simulate)
+        graph_learn(env, num_timesteps=num_timesteps,
+        q_func=Q_function_graph_model.Q_func, modelfile=modelfile)
 
     else:
         with tf.Session() as sess:    
