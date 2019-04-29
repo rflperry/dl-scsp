@@ -87,20 +87,17 @@ class TSP_env:
         return self.acc_reward
 
     def at_random_solution(self):
-        temp_state = np.zeros(self.number_nodes)
-        temp_prior = None
+        temp_state = np.zeros(self.number_nodes) + 1
         temp_cost = 0
-        while not self.is_done(temp_state):
-            temp_action = np.random.randint(self.number_nodes)
-            temp_state[temp_action] = 1
-            if temp_prior:
-                temp_cost += -self.weight_matrix[temp_prior, temp_action]
+        path = np.arange(self.number_nodes); np.random.shuffle(path)
+        for i in range(nodes-1):
+            temp_cost += -self.weight_matrix[path[i],path[i+1]]
 
         return temp_cost, temp_state
 
     def optimal_solution(self):
         # TODO
-        return 0, None
+        return 10, None
 
     # TODO?
     def close(self):
