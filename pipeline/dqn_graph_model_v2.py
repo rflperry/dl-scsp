@@ -127,10 +127,14 @@ def learn(env,
     graph_weights_ph = tf.placeholder(tf.float32,
                                       [None, env.number_nodes, env.number_nodes],
                                       name='graph_weights_ph')
+    embedding_ph = tf.placeholder(tf.float32,
+                                      [None, env.number_nodes, env.embedding.shape()[1]],
+                                      name='embedding_ph')
     # Q network
     q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
                         adj=adj_ph,
                         w=graph_weights_ph,
+                        embed=embedding_ph,
                         p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
                         scope="q_func", reuse=False,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
@@ -138,6 +142,7 @@ def learn(env,
     q_func_net_argmax_target = q_func(x=obs_tp1_ph, # q function returns some sort of equation
                                       adj=adj_ph,
                                       w=graph_weights_ph,
+                                      embed=embedding_ph,
                                       p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
                                       scope="q_func", reuse=False,
                                       pre_pooling_mlp_layers=pre_pooling_mlp_layers,
@@ -146,15 +151,16 @@ def learn(env,
     target_q_func_net = q_func(x=obs_tp1_ph, # q function returns some sort of equation
                                adj=adj_ph, 
                                w=graph_weights_ph,
+                               embed=embedding_ph,
                                p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
                                scope="target_q_func", reuse=False,
                                pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                                post_pooling_mlp_layers=post_pooling_mlp_layers)
 
     if not double_DQN:#deep q
-        target_y = rew_t_ph + tf.pow(gamma, transition_length_ph) *                              done_mask_ph * tf.reduce_max(target_q_func_net, axis=1)
+        target_y = rew_t_ph + tf.pow(gamma, transition_length_ph) * done_mask_ph * tf.reduce_max(target_q_func_net, axis=1)
     else:#double deep q
-        target_y = rew_t_ph +                    tf.pow(gamma, transition_length_ph) * done_mask_ph *                    tf.reduce_sum(target_q_func_net *                                 tf.one_hot(tf.argmax(q_func_net_argmax_target, axis = 1),
+        target_y = rew_t_ph + tf.pow(gamma, transition_length_ph) * done_mask_ph * tf.reduce_sum(target_q_func_net * tf.one_hot(tf.argmax(q_func_net_argmax_target, axis = 1),
                                             depth=num_actions),\
                                  axis=1)
     # (double) dqn mechanics
@@ -365,10 +371,14 @@ def test(session, env, adjacency_matrix): # writen to look at a single test grap
     graph_weights_ph = tf.placeholder(tf.float32,
                                       [None, env.number_nodes, env.number_nodes],
                                       name='graph_weights_ph')
+    embedding_ph = tf.placeholder(tf.float32,
+                                      [None, env.number_nodes, env.embedding.shape()[1]],
+                                      name='embedding_ph')
     # Q network
     q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
                         adj=adj_ph,
                         w=graph_weights_ph,
+                        embed=embedding_ph,
                         p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
                         scope="q_func", reuse=False,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,

@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-def Q_func(x, adj, w, p, T, initialization_stddev,
+def Q_func(x, adj, w, embed, p, T, initialization_stddev,
            scope, reuse=False, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
     """
     x:      B x n_vertices.
@@ -65,10 +65,9 @@ def Q_func(x, adj, w, p, T, initialization_stddev,
             if t != 0:
                 mu = tf.nn.relu(tf.add(mu_part1 + mu_part2, mu_part3_1, name='mu_' + str(t)))
             else:
-                # Should be a NxK matrix for embedding of matrix K
-                # Transpose to KxN
-                #mu = embed
-                mu = tf.nn.relu(tf.add(mu_part1, mu_part3_1, name='mu_' + str(t)))
+                # Matrix NxK
+                mu = embed
+                #mu = tf.nn.relu(tf.add(mu_part1, mu_part3_1, name='mu_' + str(t)))
 
         # Define the Qs
         Q_part1 = tf.einsum('kl,ivk->ivl', theta6, tf.einsum('ivu,iuk->ivk', adj, mu))
