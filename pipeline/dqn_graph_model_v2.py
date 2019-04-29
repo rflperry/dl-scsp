@@ -242,7 +242,7 @@ def learn(env,
                 # choose random action from among others
                 action = np.array(random.choice(other_actions))
         else:
-            action = np.array(random.choice(np.where(observations[-1]==0)[1]))
+            action = np.array(random.choice(np.where(observations[-1]==0)[0]))
         #forcast n-steps
         next_obs, reward, done = env.step(action)
         observations.append(next_obs)
