@@ -269,7 +269,7 @@ def learn(env,
                 t % learning_freq == 0 and
                 replay_buffer.can_sample(batch_size)):
 
-            obs_t_batch, adj_batch, graph_weights_batch, act_batch,            rew_batch, obs_tp1_batch, done_mask_batch, transition_length_batch = replay_buffer.sample(batch_size)
+            obs_t_batch, adj_batch, graph_weights_batch, act_batch, rew_batch, obs_tp1_batch, done_mask_batch, transition_length_batch = replay_buffer.sample(batch_size)
             if not(model_initialized):
                 initialize_interdependent_variables(session, tf.global_variables(), {
                             obs_t_ph: obs_t_batch,
