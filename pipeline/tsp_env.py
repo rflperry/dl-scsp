@@ -1,34 +1,52 @@
 import numpy as np
 import networkx as nx
+import random
 
 class TSP_env:
-    def __init__(self, p = 0.15, replay_penalty=0, data, adjacencies):
-        self.data = data #we need dish
-        self.adjacency_matrices = adjacencies
-        self.p = p
+    def __init__(self, simulate=False, replay_penalty=0):
+        #self.data = data #we need dish
+        #self.adjacency_matrices = adjacencies
         self.env_name = 'TSP'
         self.replay_penalty = replay_penalty
         self.ind = 0
-        
+        self.simulate = simulate
+        self.num_graphs = 200
         self.graph = self.getGraph()
-        self.num_nodes = self.graph.shape[0]
-        self.state_shape = [self.num_nodes]
-        self.num_actions = self.num_nodes
-        self.adjacencies = self.getAdj_mat()
+        #self.adjacency_matrices = adjacencies
+        self.number_nodes = len(self.graph)
+        self.state_shape = [self.number_nodes]
+        self.num_actions = self.number_nodes
+        #self.adjacencies = self.getAdj_mat()
 
     def getGraph(self):
-        return self.data(self.ind)
+        if self.simulate:
+            nodes = 10
+            G = nx.complete_graph(nodes,create_using=nx.DiGraph)
+            for (u,v,w) in G.edges(data=True):
+                w['weight'] = random.randint(2,10)
+            path = np.arange(nodes); np.random.shuffle(path)
+            for i in range(nodes-1):
+                G[path[i]][path[i+1]]['weight'] = 1
+            return(G)
+        #return self.data(self.ind)
     
-    def getAdj_mat(self)
-        return self.adjacency_matrices(self.ind)
+    def getAdj_mat(self):
+        return(nx.to_numpy_matrix(self.graph))
+        #return self.adjacency_matrices(self.ind)
     
+    def getEmbedding(self):
+        return(self.getAdj_mat())
+
     def reset(self):
         self.acc_reward = 0
+        self.prior_node = None
+        # Load Graph
         self.graph = self.getGraph()
-        #self.graph = nx.erdos_renyi_graph(n = self.number_nodes, p = self.p)
-        #self.nodes = list(self.graph.nodes)
-        #self.edges = list(self.graph.edges)
-        self.state = np.zeros(self.num_nodes())
+        self.nodes = list(self.graph.nodes)
+        self.edges = list(self.graph.edges)
+        # State for each node
+        self.state = np.zeros(self.number_nodes)
+        self.embedding = self.getEmbedding()
         self.adjacency_matrix = self.getAdj_mat()
         self.weight_matrix = self.adjacency_matrix
         self.ind += 1
@@ -36,23 +54,30 @@ class TSP_env:
         #nope
         #if len(self.edges) == 0:
         #    self.reset()
-        #return self.state
+        
+        return self.state
 
+    # Checks state vector to see if any nodes not connected
     def is_done(self, state):
         done = True
         if np.isin(0, self.state):
             done = False
         return done
 
+    # Checks to see if all graphs have been trained on
+    def all_graphs_trained(self):
+        return self.ind >= self.num_graphs
+
     def step(self, action):
         if self.state[action] != 1:
             self.state[action] = 1
-            #TODO: calculate reward based on adjmat
-            rew = -1
-            #moved this inside if loop, because never step to same node
-            self.acc_reward += rew
-        #else:
-        #    rew = -self.replay_penalty
+            if self.prior_node:
+                rew = -self.weight_matrix[self.prior_node, action]
+            else:
+                rew = 0
+            self.prior_node = action
+        else:
+            rew = -self.replay_penalty
 
 
         return self.state, rew, self.is_done(self.state)
@@ -61,12 +86,18 @@ class TSP_env:
         return self.acc_reward
 
     def at_random_solution(self):
-        temp_state = np.zeros(self.number_nodes)
-        while not self.is_done(temp_state):
-            temp_state[np.random.randint(self.number_nodes)] = 1
+        temp_state = np.zeros(self.number_nodes) + 1
+        temp_cost = 0
+        path = np.arange(self.number_nodes); np.random.shuffle(path)
+        for i in range(self.number_nodes-1):
+            temp_cost += -self.weight_matrix[path[i],path[i+1]]
 
-        return -np.sum(temp_state), temp_state
+        return temp_cost, temp_state
 
     def optimal_solution(self):
         # TODO
-        return 0, None
+        return -10, None
+
+    # TODO?
+    def close(self):
+        return

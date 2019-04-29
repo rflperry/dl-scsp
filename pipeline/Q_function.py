@@ -65,6 +65,9 @@ def Q_func(x, adj, w, p, T, initialization_stddev,
             if t != 0:
                 mu = tf.nn.relu(tf.add(mu_part1 + mu_part2, mu_part3_1, name='mu_' + str(t)))
             else:
+                # Should be a NxK matrix for embedding of matrix K
+                # Transpose to KxN
+                #mu = embed
                 mu = tf.nn.relu(tf.add(mu_part1, mu_part3_1, name='mu_' + str(t)))
 
         # Define the Qs
