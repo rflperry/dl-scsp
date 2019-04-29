@@ -50,7 +50,7 @@ def graph_learn(env, num_timesteps, q_func):
         initialization_stddev=1e-3,
         exploration=exploration_schedule,
         stopping_criterion=stopping_criterion,
-        replay_buffer_size=1000,
+        replay_buffer_size=100,
         batch_size=16,
         gamma=0.99,
         learning_starts=50,

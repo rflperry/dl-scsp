@@ -266,7 +266,7 @@ def learn(env,
         # initialized and random actions should be taken
 
         if (t > learning_starts and
-                t % learning_freq == 0 and
+                (t % learning_freq == 0 or done) and
                 replay_buffer.can_sample(batch_size)):
 
             obs_t_batch, adj_batch, graph_weights_batch, act_batch, rew_batch, obs_tp1_batch, done_mask_batch, transition_length_batch = replay_buffer.sample(batch_size)

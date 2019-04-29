@@ -90,14 +90,14 @@ class TSP_env:
         temp_state = np.zeros(self.number_nodes) + 1
         temp_cost = 0
         path = np.arange(self.number_nodes); np.random.shuffle(path)
-        for i in range(nodes-1):
+        for i in range(self.number_nodes-1):
             temp_cost += -self.weight_matrix[path[i],path[i+1]]
 
         return temp_cost, temp_state
 
     def optimal_solution(self):
         # TODO
-        return 10, None
+        return -10, None
 
     # TODO?
     def close(self):
