@@ -360,7 +360,7 @@ def test(sess,
          post_pooling_mlp_layers,
          n_hidden_units,
          T=4, 
-         modelfile): # writen to look at a single test graph at a time...
+         modelfile='temp'): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     # Restore session
     saver =tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
