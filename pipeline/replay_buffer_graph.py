@@ -42,8 +42,8 @@ class ReplayBuffer:
         idxes = np.random.choice(self.num_in_buffer, batch_size)
         return self.obs[idxes], \
                self.adj[idxes], \
-               self.weight_matrix[idxes], \
-               self.embedding[idex], \
+               self.weight_matrix[idexs], \
+               self.embedding[idexs], \
                self.actions[idxes], \
                self.rewards[idxes], \
                self.next_obs[idxes], \
