@@ -356,8 +356,11 @@ def learn(env,
 # In[ ]:
 
 
-def test(session, env, adjacency_matrix): # writen to look at a single test graph at a time...
+def test(sess, env, modelfile): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
+    saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
+    saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
+
     # placeholder for current observation
     obs_t_ph              = tf.placeholder(tf.float32, [None] + list(input_shape))
     # placeholder for current action
@@ -393,88 +396,29 @@ def test(session, env, adjacency_matrix): # writen to look at a single test grap
                         scope="q_func", reuse=False,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
-    #q_func_net_argmax_target = q_func(x=obs_tp1_ph, # q function returns some sort of equation
-                                      #adj=adj_ph,
-                                      #w=graph_weights_ph,
-                                      #p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                                      #scope="q_func", reuse=False,
-                                      #pre_pooling_mlp_layers=pre_pooling_mlp_layers,
-                                      #post_pooling_mlp_layers=post_pooling_mlp_layers)
-    #target network
-    #target_q_func_net = q_func(x=obs_tp1_ph, # q function returns some sort of equation
-                               #adj=adj_ph, 
-                               #w=graph_weights_ph,
-                               #p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                               #scope="target_q_func", reuse=False,
-                               #pre_pooling_mlp_layers=pre_pooling_mlp_layers,
-                               #post_pooling_mlp_layers=post_pooling_mlp_layers)
-
-    #if not double_DQN:#deep q
-        #target_y = rew_t_ph + tf.pow(gamma, transition_length_ph) *\
-                              #done_mask_ph * tf.reduce_max(target_q_func_net, axis=1)
-    #else:#double deep q
-        #target_y = rew_t_ph + \
-                   #tf.pow(gamma, transition_length_ph) * done_mask_ph * \
-                   #tf.reduce_sum(target_q_func_net *\
-                                 #tf.one_hot(tf.argmax(q_func_net_argmax_target, axis = 1),
-                                            #depth=num_actions),\
-                                 #axis=1)
-    # (double) dqn mechanics
-    #actual_y = tf.reduce_sum(tf.multiply(q_func_net, tf.one_hot(act_t_ph, depth=num_actions)), axis=1)
-    #total_error = tf.nn.l2_loss(target_y - actual_y)
-    #q_func_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
-                                    #scope='q_func')
-    #target_q_func_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
-                                           #scope='target_q_func')
-
-    #training_error_summ_sy = tf.summary.scalar('training_total_error', total_error)
-
-    # construct optimization op (with gradient clipping)
-    # learning_rate = tf.placeholder(tf.float32, (), name="learning_rate")
-    #optimizer = tf.train.AdamOptimizer(learning_rate)
-    #train_fn = optimizer.minimize(total_error)
-
-    # update_target_fn will be called periodically to copy Q network to target Q network
-    #update_target_fn = []
-    #for var, var_target in zip(sorted(q_func_vars,        key=lambda v: v.name),
-                               #sorted(target_q_func_vars, key=lambda v: v.name)):
-        #update_target_fn.append(var_target.assign(var))
-    #update_target_fn = tf.group(*update_target_fn)
-
-    # construct the replay buffer
-    replay_buffer = replay_buffer_graph.ReplayBuffer(replay_buffer_size, obs_size=input_shape[0],
-                                                     n_nodes=input_shape[0])
-    
-    
-    
+        
     # we have a saved model at this point.
     # We would call the saved model in main, and run test using that trained model and some input data
     done = False 
     # over time, we're waiting until this thing is done
     for t in itertools.count():
         ### 1. Check stopping criterion (once we finish with the graph, we are finished with the graph)
-        model_initialized = True
-        if done == True:
+        if stopping_criterion(env, t) is not None and stopping_criterion(env, t):
             break
-        if model_initialized:
-            #epsilon = exploration.value(t)/10
-            epsilon = .05
 
-            # using function to pick an action, guided by our existing set of Q-values
-            action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])
-            r = random.random()
-            if r <= epsilon:
-                all_possible_action = list(range(num_actions))
-                other_actions = [x for x in all_possible_action if observations[-1][x] != 1]
-                #choose random action from among others
-                action = np.array(random.choice(other_actions))
-        else:
-            action = np.array(random.choice(list(range(num_actions))))
-            #forcast n-steps
+        ### 2. Step the env and store the transition
+        if done:
+            observations = [env.reset()]
+
+        q_values=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
+                                                        adj_ph: env.adjacency_matrix[None],
+                                                        graph_weights_ph: env.weight_matrix[None],
+                                                        embedding_ph: env.embedding[None]})
+
+        action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])
         next_obs, reward, done = env.step(action)
         observations.append(next_obs)
 
-       
         #####
 
         ### 4. Log progress

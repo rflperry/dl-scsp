@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 def Q_func(x, adj, w, embed, p, T, initialization_stddev,
-           scope, reuse=False, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
+           scope, reuse=False, train=True, thetas=None, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
     """
     x:      B x n_vertices.
     Placeholder for the current state of the solution.
@@ -12,31 +12,36 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev,
     w:      n_vertices x n_vertice.
     A placeholder fot the weights matrix of the graph.
     """
-    with tf.variable_scope(scope, reuse=False):
-        with tf.variable_scope('thetas'):
-            theta1 = tf.Variable(tf.random_normal([p], stddev=initialization_stddev), name='theta1')
-            theta2 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta2')
-            theta3 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta3')
-            theta4 = tf.Variable(tf.random_normal([p], stddev=initialization_stddev), name='theta4')
-            theta5 = tf.Variable(tf.random_normal([2 * p], stddev=initialization_stddev), name='theta5')
-            theta6 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta6')
-            theta7 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta7')
+
+    if train:
+        with tf.variable_scope(scope, reuse=False):
+            with tf.variable_scope('thetas'):
+                theta1 = tf.Variable(tf.random_normal([p], stddev=initialization_stddev), name='theta1')
+                theta2 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta2')
+                theta3 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta3')
+                theta4 = tf.Variable(tf.random_normal([p], stddev=initialization_stddev), name='theta4')
+                theta5 = tf.Variable(tf.random_normal([2 * p], stddev=initialization_stddev), name='theta5')
+                theta6 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta6')
+                theta7 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta7')
 
 
-        with tf.variable_scope('pre_pooling_MLP', reuse=False):
-            Ws_pre_pooling = []; bs_pre_pooling = []
-            for i in range(pre_pooling_mlp_layers):
-                Ws_pre_pooling.append(tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev),
-                                          name='W_MLP_pre_pooling_' + str(i)))
-                bs_pre_pooling.append(tf.Variable(tf.random_normal([p], stddev=initialization_stddev),
-                                          name='b_MLP_pre_pooling_' + str(i)))
+            with tf.variable_scope('pre_pooling_MLP', reuse=False):
+                Ws_pre_pooling = []; bs_pre_pooling = []
+                for i in range(pre_pooling_mlp_layers):
+                    Ws_pre_pooling.append(tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev),
+                                            name='W_MLP_pre_pooling_' + str(i)))
+                    bs_pre_pooling.append(tf.Variable(tf.random_normal([p], stddev=initialization_stddev),
+                                            name='b_MLP_pre_pooling_' + str(i)))
 
-            Ws_post_pooling = []; bs_post_pooling = []
-            for i in range(post_pooling_mlp_layers):
-                Ws_post_pooling.append(tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev),
-                                          name='W_MLP_post_pooling_' + str(i)))
-                bs_post_pooling.append(tf.Variable(tf.random_normal([p], stddev=initialization_stddev),
-                                          name='b_MLP_post_pooling_' + str(i)))
+                Ws_post_pooling = []; bs_post_pooling = []
+                for i in range(post_pooling_mlp_layers):
+                    Ws_post_pooling.append(tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev),
+                                            name='W_MLP_post_pooling_' + str(i)))
+                    bs_post_pooling.append(tf.Variable(tf.random_normal([p], stddev=initialization_stddev),
+                                            name='b_MLP_post_pooling_' + str(i)))
+    else:
+        # Unpack passed theta's recovered from training session.
+        theta1,theta2,theta3,theta4,theta5,theta6,theta7 = thetas
 
         # Define the mus
         # Loop over t

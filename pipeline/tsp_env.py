@@ -79,9 +79,7 @@ class TSP_env:
             else:
                 rew = 0
             self.prior_node = action
-        else:
-            rew = -self.replay_penalty
-
+        self.acc_reward += rew
 
         return self.state, rew, self.is_done(self.state)
 
