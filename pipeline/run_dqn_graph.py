@@ -112,7 +112,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--simulate", help="true if run on simulated data, false for real data",
                         action="store_true")
     parser.add_argument("-f", "--folder", help="folder with data to test or train",
-                         type=str, dest='folder', default= 'test_default' if test else 'train_default',
+                         type=str, dest='folder',default=None,
                           metavar='FOLDER')
     parser.add_argument("-p", "--length", help="length of substrings",
                          type=int, dest='penalty', default=0, metavar='STRING_length')
