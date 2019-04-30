@@ -84,18 +84,18 @@ def graph_test(session,env,q_func,modelfile):
 
 import argparse
 
-def main(train=False,test=False,simulate=True,modelfile=None):
+def main(train=False,test=False,simulate=True,modelfile=None,folder=None):
     num_timesteps = 100000
     if train:
         #with tf.Session() as sess:
             #sess.run(initialize_all_variables())
-        env = tsp_env.TSP_env(simulate=simulate)
+        env = tsp_env.TSP_env(simulate=simulate, data_folder=folder)
         graph_learn(env, num_timesteps=num_timesteps,
         q_func=Q_function_graph_model.Q_func, modelfile=modelfile)
 
     elif test:
         with tf.Session() as sess:    
-            env = tsp_env.TSP_env(simulate=simulate)
+            env = tsp_env.TSP_env(simulate=simulate, data_folder=folder)
             graph_test(session=sess, 
                      env=env, 
                      q_func=Q_function_graph_model.Q_func,
@@ -111,10 +111,13 @@ if __name__ == "__main__":
                         action="store_true")
     parser.add_argument("-s", "--simulate", help="true if run on simulated data, false for real data",
                         action="store_true")
+    parser.add_argument("-f", "--folder", help="folder with data to test or train",
+                         type=str, dest='folder', metavar='FOLDER')
     parser.add_argument("modelfile", type=str, help="file name to save models")
     args = parser.parse_args()
     
     main(args.train,
         args.test,
         args.simulate,
+        args.folder,
         args.modelfile)   
