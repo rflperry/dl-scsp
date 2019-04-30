@@ -89,7 +89,7 @@ def main():
             saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
             saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
             env = tsp_env.TSP_env(simulate=True)
-            test(sess, env, ?)
+            test(sess, env)
     
 if __name__ == "__main__":
     main()   

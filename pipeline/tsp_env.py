@@ -39,7 +39,8 @@ class TSP_env:
 
     def reset(self):
         self.acc_reward = 0
-        self.prior_node = None
+        self.left_node = None
+        self.right_node = None
         # Load Graph
         self.graph = self.getGraph()
         self.nodes = list(self.graph.nodes)
@@ -68,14 +69,21 @@ class TSP_env:
     def all_graphs_trained(self):
         return self.ind >= self.num_graphs
 
-    def step(self, action):
+    def step(self, action, side):
         if self.state[action] != 1:
             self.state[action] = 1
-            if self.prior_node:
-                rew = -self.weight_matrix[self.prior_node, action]
+            if(side == 'right'):
+                if self.right_node:
+                    rew = -self.weight_matrix[self.right_node, action]
+                else:
+                    rew = 0
+                self.right_node = action
             else:
-                rew = 0
-            self.prior_node = action
+                if self.left_node:
+                    rew = -self.weight_matrix[action, self.left_node]
+                else:
+                    rew = 0
+                self.left_node = action
         else:
             rew = -self.replay_penalty
 
