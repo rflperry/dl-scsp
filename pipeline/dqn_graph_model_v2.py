@@ -141,7 +141,7 @@ def learn(env,
                         w=graph_weights_ph,
                         embed=embedding_ph,
                         p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                        scope="q_func", reuse=False,
+                        scope="q_func", reuse=False, train=True,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
     q_func_net_argmax_target = q_func(x=obs_tp1_ph, # q function returns some sort of equation
@@ -149,7 +149,7 @@ def learn(env,
                                       w=graph_weights_ph,
                                       embed=embedding_ph,
                                       p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                                      scope="q_func", reuse=False,
+                                      scope="q_func", reuse=False, train=True,
                                       pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                                       post_pooling_mlp_layers=post_pooling_mlp_layers)
     #target network
@@ -158,7 +158,7 @@ def learn(env,
                                w=graph_weights_ph,
                                embed=embedding_ph,
                                p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                               scope="target_q_func", reuse=False,
+                               scope="target_q_func", reuse=False, train=True,
                                pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                                post_pooling_mlp_layers=post_pooling_mlp_layers)
 

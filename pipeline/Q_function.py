@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 def Q_func(x, adj, w, embed, p, T, initialization_stddev,
-           scope, reuse=False, train=True, thetas=None, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
+           scope, reuse=False, train=True, theta_list=None, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
     """
     x:      B x n_vertices.
     Placeholder for the current state of the solution.
@@ -41,7 +41,7 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev,
                                             name='b_MLP_post_pooling_' + str(i)))
     else:
         # Unpack passed theta's recovered from training session.
-        theta1,theta2,theta3,theta4,theta5,theta6,theta7 = thetas
+        theta1,theta2,theta3,theta4,theta5,theta6,theta7 = theta_list
 
         # Define the mus
         # Loop over t
