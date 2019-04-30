@@ -172,6 +172,7 @@ def learn(env,
                                             depth=num_actions),\
                                  axis=1)
     # (double) dqn mechanics
+    # Takes elementwise max of Q_func_net_A/B component
     actual_y = tf.reduce_sum(tf.multiply(tf.math.maximum(q_func_net_A, q_func_net_B), 
                             tf.one_hot(act_t_ph, depth=num_actions)), axis=1)
     total_error = tf.nn.l2_loss(target_y - actual_y)

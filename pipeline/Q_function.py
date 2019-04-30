@@ -103,7 +103,6 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev=None,
         
         return tf.identity(tf.einsum('k,ivk->iv', theta5,
                                      tf.nn.relu(tf.concat([A_Q_part1, A_Q_part2], axis=2))),
-                           name='A_Q'),  
-                tf.identity(tf.einsum('k,ivk->iv', theta5,
+                           name='A_Q'), tf.identity(tf.einsum('k,ivk->iv', theta5,
                                      tf.nn.relu(tf.concat([B_Q_part1, B_Q_part2], axis=2))),
                            name='B_Q')
