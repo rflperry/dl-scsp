@@ -131,9 +131,6 @@ class TSP_env:
 
         return temp_cost, temp_state
 
-    def optimal_solution(self):
-        return self.optimal_solution, None
-
     # TODO?
     def close(self):
         return

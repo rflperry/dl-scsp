@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import sys
 import gym.spaces
 import itertools
@@ -339,7 +336,7 @@ def learn(env,
             # episode_rewards = get_wrapper_by_name(env, "Monitor").get_episode_rewards()
             if done:
                 episode_total_rewards.append(env.accumulated_reward())
-                episode_total_optimal_rewards.append(env.optimal_solution()[0])
+                episode_total_optimal_rewards.append(env.optimal_solution)
                 episode_total_at_random_rewards.append(env.at_random_solution()[0])
             
             mean_approx_ratio = 0
@@ -486,7 +483,7 @@ def test(session,
         mean_approx_ratio = 'not computed yet'
         if done:
             episode_total_rewards.append(env.accumulated_reward())
-            episode_total_optimal_rewards.append(env.optimal_solution()[0])
+            episode_total_optimal_rewards.append(env.optimal_solution)
             episode_total_at_random_rewards.append(env.at_random_solution()[0])
             if env.env_name =='TSP':
                 mean_approx_ratio = np.mean(np.array(episode_total_rewards) /
