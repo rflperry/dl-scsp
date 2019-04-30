@@ -237,13 +237,23 @@ def learn(env,
         if model_initialized:
             epsilon = exploration.value(t)
             # learning a policy, q vals gives me that policy
-            q_values=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
+            q_values_A, q_values_B=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
                                                         adj_ph: env.adjacency_matrix[None],
                                                         graph_weights_ph: env.weight_matrix[None],
                                                         embedding_ph: env.embedding[None]})
 
             # using function to pick an action
-            action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])
+            # find arg maxes of each, which max val is bigger, roll wit it.
+            A = q_values_A[0] * (1 - observations[-1]) - 1e5 * observations[-1]
+            B = q_values_B[0] * (1 - observations[-1]) - 1e5 * observations[-1]
+            side = ''
+            if (np.max(A) >= np.max(B)):
+                action = np.argmax(A)
+                side = 'right'
+            else:
+                action = np.argmax(B)
+                side = 'left'
+            
             r = random.random()
             if r <= epsilon:
                 all_possible_action = list(range(num_actions))
@@ -257,7 +267,7 @@ def learn(env,
         else:
             action = np.array(random.choice(np.where(observations[-1]==0)[0]))
         #forcast n-steps
-        next_obs, reward, done = env.step(action)
+        next_obs, reward, done = env.step(action, side)
         observations.append(next_obs)
 
         if len(observations) > n_steps_ahead:
