@@ -73,7 +73,7 @@ def graph_test(session,env,q_func,modelfile):
         # which is different from the number of steps in the underlying env
         return(env.is_done(env.state) and env.all_graphs_trained())
     
-    dqn.test(session=sess, 
+    dqn.test(session=session, 
              env=env, 
              q_func=Q_function_graph_model.Q_func,
              pre_pooling_mlp_layers=2,
