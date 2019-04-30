@@ -84,7 +84,7 @@ def graph_test(session,env,q_func,modelfile):
 
 import argparse
 
-def main(train=False,test=False,simulate=True,folder=None,modelfile=None):
+def main(train=False,test=False,simulate=False,folder=None,modelfile=None):
     num_timesteps = 100000
     if train:
         #with tf.Session() as sess:

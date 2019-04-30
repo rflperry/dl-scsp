@@ -21,7 +21,7 @@ class TSP_env:
     
     # Loads the file paths and sets num graphs
     def data_loader(self, data_folder):
-        if not simulate:
+        if not self.simulate:
             self.data_paths = [os.path.join(data_folder, d) for d in os.listdir(data_folder)]
             self.num_graphs = len(self.data_paths)
             self.penalty = 100
