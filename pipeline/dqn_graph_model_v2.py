@@ -242,10 +242,14 @@ def learn(env,
         if model_initialized:
             epsilon = exploration.value(t)
             # learning a policy, q vals gives me that policy
-            q_values_A, q_values_B=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
-                                                        adj_ph: env.adjacency_matrix[None],
-                                                        graph_weights_ph: env.weight_matrix[None],
-                                                        embedding_ph: env.embedding[None]})
+            q_values_A=session.run(q_func_net_A, feed_dict={obs_t_ph: observations[-1][None],
+                                    adj_ph: env.adjacency_matrix[None],
+                                    graph_weights_ph: env.weight_matrix[None],
+                                    embedding_ph: env.embedding[None]})
+            q_values_B=session.run(q_func_net_B, feed_dict={obs_t_ph: observations[-1][None],
+                                    adj_ph: env.adjacency_matrix[None],
+                                    graph_weights_ph: env.weight_matrix[None],
+                                    embedding_ph: env.embedding[None]})
 
             # using function to pick an action
             # find arg maxes of each, which max val is bigger, roll wit it.
