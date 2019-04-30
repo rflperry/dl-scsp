@@ -105,6 +105,7 @@ def learn(env,
 
     input_shape = env.state_shape
     embed_dim = env.embedding_dimension
+    n_hidden_units = env.embedding_dimension
     num_actions = env.num_actions
 
     # set up placeholders
@@ -202,8 +203,8 @@ def learn(env,
     log_files_name = filename
     #log_files_name = 'DQN_' + str(env.env_name) + '-lf=' + str(learning_freq) + '-b=' + str(batch_size) + '-' + time.strftime('%m-%d-%Y-%H:%M:%S')
 
-    #writer = tf.summary.FileWriter('/tmp/' + log_files_name,
-    #                               session.graph)
+    writer = tf.summary.FileWriter('/tmp/' + log_files_name,
+                                   session.graph)
     
     tf.global_variables_initializer().run()
     saver.save(session, '/tmp/saved_models/' + log_files_name)

@@ -46,7 +46,7 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
         q_func=q_func,
         pre_pooling_mlp_layers=2,
         post_pooling_mlp_layers=1,
-        n_hidden_units=32, T=4,
+        n_hidden_units=-1, T=4,
         initialization_stddev=1e-3,
         exploration=exploration_schedule,
         stopping_criterion=stopping_criterion,
