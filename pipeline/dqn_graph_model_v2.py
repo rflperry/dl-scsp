@@ -353,7 +353,7 @@ def learn(env,
 # at this point we should have a saved model...
 
 
-def test(sess, 
+def test(session, 
          env, 
          q_func,
          pre_pooling_mlp_layers,
@@ -363,8 +363,8 @@ def test(sess,
          modelfile='temp'): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     # Restore session
-    saver =tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
-    saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/'))
+    saver = tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
+    saver.restore(session,tf.train.latest_checkpoint('/tmp/saved_models/'))
 
     exp_name = env.env_name
     logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
@@ -409,7 +409,7 @@ def test(sess,
                         w=graph_weights_ph,
                         embed=embedding_ph,
                         p=n_hidden_units, T=T,
-                        scope="q_func", reuse=False, train=False, sess=sess,
+                        scope="q_func", reuse=False, train=False, sess=session,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
         
