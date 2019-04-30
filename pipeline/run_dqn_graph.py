@@ -80,8 +80,6 @@ def main(train=False,test=False,simulate=True,modelfile=None):
 
     elif test:
         with tf.Session() as sess:    
-            saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
-            saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
             env = tsp_env.TSP_env(simulate=simulate)
             dqn.test(sess, env, modelfile)
     else:

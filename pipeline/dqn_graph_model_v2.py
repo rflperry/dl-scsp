@@ -353,9 +353,6 @@ def learn(env,
 # at this point we should have a saved model...
 
 
-# In[ ]:
-
-
 def test(sess, env, modelfile): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
