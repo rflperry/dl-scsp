@@ -367,7 +367,8 @@ def test(sess,
     saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/'))
 
     # load theta's from the saved session
-    theta_list = [sess.run("q_func/thetas/theta" + str(i) + ":0") for i in range(1,8)]
+    theta_list = [tf.convert_to_tensor(sess.run("q_func/thetas/theta" + str(i) + ":0"),
+                    name='theta%d' % i), for i in range(1,8)]
 
     exp_name = env.env_name
     logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
