@@ -98,7 +98,7 @@ def learn(env,
         If not None gradients' norms are clipped to this value.
     """
     exp_name = env.env_name
-    logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
+    logz.configure_output_dir('train_logs/' + filename + '/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
     ###############
     # BUILD MODEL #
     ###############
@@ -203,7 +203,7 @@ def learn(env,
     log_files_name = filename
     #log_files_name = 'DQN_' + str(env.env_name) + '-lf=' + str(learning_freq) + '-b=' + str(batch_size) + '-' + time.strftime('%m-%d-%Y-%H:%M:%S')
 
-    writer = tf.summary.FileWriter('logs/' + log_files_name,
+    writer = tf.summary.FileWriter('train_logs/' + filename + '/' + log_files_name,
                                    session.graph)
     
     tf.global_variables_initializer().run()
@@ -367,7 +367,7 @@ def test(session,
     saver.restore(session,tf.train.latest_checkpoint('saved_models/'))
 
     exp_name = env.env_name
-    logz.configure_output_dir('logs/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
+    logz.configure_output_dir('test_logs/' + modelfile + '/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
     ###############
     # BUILD MODEL #
     ###############
