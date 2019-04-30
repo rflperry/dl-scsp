@@ -442,8 +442,19 @@ def test(session,
                                                         graph_weights_ph: env.weight_matrix[None],
                                                         embedding_ph: env.embedding[None]})
 
-        action = np.argmax(q_values[0] * (1 - observations[-1]) - 1e5 * observations[-1])
-        next_obs, reward, done = env.step(action)
+        # using function to pick an action
+            # find arg maxes of each, which max val is bigger, roll wit it.
+            A = q_values_A[0] * (1 - observations[-1]) - 1e5 * observations[-1]
+            B = q_values_B[0] * (1 - observations[-1]) - 1e5 * observations[-1]
+            side = ''
+            if (np.max(A) >= np.max(B)):
+                action = np.argmax(A)
+                side = 'right'
+            else:
+                action = np.argmax(B)
+                side = 'left'
+                
+        next_obs, reward, done = env.step(action, side)
         observations.append(next_obs)
 
         #####

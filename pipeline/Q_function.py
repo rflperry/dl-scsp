@@ -55,8 +55,8 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev=None,
             # Unpack passed theta's recovered from training session.
             theta1,theta2,theta3,theta4,theta5,theta6,theta7 = theta_list
 
-        B_adj = adj.T
-        B_w = w.T
+        B_adj = tf.transpose(adj, perm=[0, 2, 1])
+        B_w = tf.transpose(w, perm=[0, 2, 1])
         # Define the mus
         # Loop over t
         for t in range(T):
