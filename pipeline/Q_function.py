@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-def Q_func(x, adj, w, embed, p, T, initialization_stddev,
-           scope, reuse=False, train=True, theta_list=None, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
+def Q_func(x, adj, w, embed, p, T, initialization_stddev=None,
+           scope='', reuse=False, train=True, theta_list=None, pre_pooling_mlp_layers = 1, post_pooling_mlp_layers = 1):
     """
     x:      B x n_vertices.
     Placeholder for the current state of the solution.
