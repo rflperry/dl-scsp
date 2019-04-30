@@ -453,9 +453,9 @@ def test(sess, env, modelfile): # writen to look at a single test graph at a tim
                 mean_approx_ratio = np.mean(np.array(episode_total_rewards) /
                                                 np.mean(np.array(episode_total_optimal_rewards)))
 
-        best_mean_episode_reward = max(best_mean_episode_reward, mean_episode_reward)
+            best_mean_episode_reward = max(best_mean_episode_reward, mean_episode_reward)
 
-        if t % LOG_EVERY_N_STEPS == 0 and model_initialized:
+        if done:
             # Save the model
             #saver.save(session, '/tmp/saved_models/' + log_files_name, global_step=t)
             # Display and log episode stats
