@@ -136,7 +136,7 @@ def learn(env,
                                       [None, env.number_nodes, env.embedding_dimension],
                                       name='embedding_ph')
     # Q network
-    q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
+    q_func_net_A, q_func_net_B = q_func(x=obs_t_ph, # q function returns some sort of equation
                         adj=adj_ph,
                         w=graph_weights_ph,
                         embed=embedding_ph,
@@ -144,7 +144,8 @@ def learn(env,
                         scope="q_func", reuse=False, train=True,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
-    q_func_net_argmax_target = q_func(x=obs_tp1_ph, # q function returns some sort of equation
+
+    q_func_net_argmax_target_A, q_func_net_argmax_target_B = q_func(x=obs_tp1_ph, # q function returns some sort of equation
                                       adj=adj_ph,
                                       w=graph_weights_ph,
                                       embed=embedding_ph,
@@ -152,8 +153,9 @@ def learn(env,
                                       scope="q_func", reuse=False, train=True,
                                       pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                                       post_pooling_mlp_layers=post_pooling_mlp_layers)
+    q_func_net_argmax_target = tf.math.maximum(q_func_net_argmax_target_A, q_func_net_argmax_target_B)
     #target network
-    target_q_func_net = q_func(x=obs_tp1_ph, # q function returns some sort of equation
+    target_q_func_net_A,target_q_func_net_B = q_func(x=obs_tp1_ph, # q function returns some sort of equation
                                adj=adj_ph, 
                                w=graph_weights_ph,
                                embed=embedding_ph,
@@ -161,6 +163,7 @@ def learn(env,
                                scope="target_q_func", reuse=False, train=True,
                                pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                                post_pooling_mlp_layers=post_pooling_mlp_layers)
+    target_q_func_net = tf.math.maximum(target_q_func_net_A,target_q_func_net_B)
 
     if not double_DQN:#deep q
         target_y = rew_t_ph + tf.pow(gamma, transition_length_ph) * done_mask_ph * tf.reduce_max(target_q_func_net, axis=1)
@@ -169,10 +172,11 @@ def learn(env,
                                             depth=num_actions),\
                                  axis=1)
     # (double) dqn mechanics
-    actual_y = tf.reduce_sum(tf.multiply(q_func_net, tf.one_hot(act_t_ph, depth=num_actions)), axis=1)
+    actual_y = tf.reduce_sum(tf.multiply(tf.math.maximum(q_func_net_A, q_func_net_B), 
+                            tf.one_hot(act_t_ph, depth=num_actions)), axis=1)
     total_error = tf.nn.l2_loss(target_y - actual_y)
     q_func_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
-                                    scope='q_func')
+                                    scope='q_func_A')
     target_q_func_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
                                            scope='target_q_func')
 
