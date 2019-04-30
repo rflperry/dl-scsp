@@ -355,8 +355,23 @@ def learn(env,
 
 def test(sess, env, modelfile): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
-    saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
-    saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
+    # Restore session
+    saver =tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
+    saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/'))
+
+    # load theta's from the saved session
+    theta_list = [sess.run("q_func/thetas/theta" + i + ":0") for i in range(1,8)]
+
+    exp_name = env.env_name
+    logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
+    ###############
+    # BUILD MODEL #
+    ###############
+
+    input_shape = env.state_shape
+    embed_dim = env.embedding_dimension
+    n_hidden_units = env.embedding_dimension
+    num_actions = env.num_actions
 
     # placeholder for current observation
     obs_t_ph              = tf.placeholder(tf.float32, [None] + list(input_shape))
@@ -390,13 +405,14 @@ def test(sess, env, modelfile): # writen to look at a single test graph at a tim
                         w=graph_weights_ph,
                         embed=embedding_ph,
                         p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
-                        scope="q_func", reuse=False,
+                        scope="q_func", reuse=False, train=False, theta_list=theta_list,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
         
     # we have a saved model at this point.
     # We would call the saved model in main, and run test using that trained model and some input data
     done = False 
+    observations = [env.reset()]
     # over time, we're waiting until this thing is done
     for t in itertools.count():
         ### 1. Check stopping criterion (once we finish with the graph, we are finished with the graph)
@@ -431,14 +447,13 @@ def test(sess, env, modelfile): # writen to look at a single test graph at a tim
 
         if len(episode_total_rewards) > 0:
             mean_episode_reward = np.mean(np.array(episode_total_rewards)[-burn:])
-            mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards)[-1000:])
-            mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards)[-1000:])
+            mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards))
+            mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards))
             if env.env_name == 'TSP':
-                mean_approx_ratio = np.mean(np.array(episode_total_rewards)[-1000:] /
-                                                np.mean(np.array(episode_total_optimal_rewards)[-1000:]))
+                mean_approx_ratio = np.mean(np.array(episode_total_rewards) /
+                                                np.mean(np.array(episode_total_optimal_rewards)))
 
-        if len(episode_total_rewards) > 1000:
-            best_mean_episode_reward = max(best_mean_episode_reward, mean_episode_reward)
+        best_mean_episode_reward = max(best_mean_episode_reward, mean_episode_reward)
 
         if t % LOG_EVERY_N_STEPS == 0 and model_initialized:
             # Save the model

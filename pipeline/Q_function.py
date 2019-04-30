@@ -10,7 +10,7 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev,
     adj:    n_vertices x n_vertices.
     A placeholder for the adjacency matrix of the graph.
     w:      n_vertices x n_vertice.
-    A placeholder fot the weights matrix of the graph.
+    A placeholder for the weights matrix of the graph.
     """
 
     
