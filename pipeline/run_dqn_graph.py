@@ -117,7 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--length", help="length of substrings",
                          type=int, dest='penalty', default=0, metavar='STRING_length')
     parser.add_argument("--modelfile", help="file name to save models",
-                        type=str, dest='modelfile', default='TSP', metavar='MODELFILE'))
+                        type=str, dest='modelfile', default='TSP', metavar='MODELFILE')
     args = parser.parse_args()
     
     main(train=args.train,
