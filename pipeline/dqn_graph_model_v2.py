@@ -425,14 +425,14 @@ def test(session,
                                       [None, env.number_nodes, env.embedding_dimension],
                                       name='embedding_ph')
     # Q network
-    q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
-                        adj=adj_ph,
-                        w=graph_weights_ph,
-                        embed=embedding_ph,
-                        p=n_hidden_units, T=T,
-                        scope="q_func", reuse=False, train=False, sess=session,
-                        pre_pooling_mlp_layers=pre_pooling_mlp_layers,
-                        post_pooling_mlp_layers=post_pooling_mlp_layers)
+    q_func_net_A, q_func_net_B = q_func(x=obs_t_ph, # q function returns some sort of equation
+                                        adj=adj_ph,
+                                        w=graph_weights_ph,
+                                        embed=embedding_ph,
+                                        p=n_hidden_units, T=T,
+                                        scope="q_func", reuse=False, train=False, sess=session,
+                                        pre_pooling_mlp_layers=pre_pooling_mlp_layers,
+                                        post_pooling_mlp_layers=post_pooling_mlp_layers)
         
     # we have a saved model at this point.
     # We would call the saved model in main, and run test using that trained model and some input data
@@ -448,10 +448,14 @@ def test(session,
         if done:
             observations = [env.reset()]
 
-        q_values=session.run(q_func_net, feed_dict={obs_t_ph: observations[-1][None],
-                                                        adj_ph: env.adjacency_matrix[None],
-                                                        graph_weights_ph: env.weight_matrix[None],
-                                                        embedding_ph: env.embedding[None]})
+        q_values_A=session.run(q_func_net_A, feed_dict={obs_t_ph: observations[-1][None],
+                                    adj_ph: env.adjacency_matrix[None],
+                                    graph_weights_ph: env.weight_matrix[None],
+                                    embedding_ph: env.embedding[None]})
+        q_values_B=session.run(q_func_net_B, feed_dict={obs_t_ph: observations[-1][None],
+                                adj_ph: env.adjacency_matrix[None],
+                                graph_weights_ph: env.weight_matrix[None],
+                                embedding_ph: env.embedding[None]})
 
         # using function to pick an action
         # find arg maxes of each, which max val is bigger, roll wit it.
