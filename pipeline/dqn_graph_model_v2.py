@@ -203,11 +203,11 @@ def learn(env,
     log_files_name = filename
     #log_files_name = 'DQN_' + str(env.env_name) + '-lf=' + str(learning_freq) + '-b=' + str(batch_size) + '-' + time.strftime('%m-%d-%Y-%H:%M:%S')
 
-    writer = tf.summary.FileWriter('/tmp/' + log_files_name,
+    writer = tf.summary.FileWriter('logs/' + log_files_name,
                                    session.graph)
     
     tf.global_variables_initializer().run()
-    saver.save(session, '/tmp/saved_models/' + log_files_name)
+    saver.save(session, 'saved_models/' + log_files_name)
 
     ###############
     # RUN ENV     #
@@ -335,7 +335,7 @@ def learn(env,
 
             if t % LOG_EVERY_N_STEPS == 0 and model_initialized:
                 # Save the model
-                saver.save(session, '/tmp/saved_models/' + log_files_name, global_step=t)
+                saver.save(session, 'saved_models/' + log_files_name, global_step=t)
                 # Display and log episode stats
                 logz.log_tabular("Timestep", t)
                 logz.log_tabular("AtRandomAverageReturn", mean_at_random_episode_reward)
@@ -363,11 +363,11 @@ def test(session,
          modelfile='temp'): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     # Restore session
-    saver = tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
-    saver.restore(session,tf.train.latest_checkpoint('/tmp/saved_models/'))
+    saver = tf.train.import_meta_graph(tf.train.latest_checkpoint('saved_models/') + '.meta')
+    saver.restore(session,tf.train.latest_checkpoint('saved_models/'))
 
     exp_name = env.env_name
-    logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
+    logz.configure_output_dir('logs/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
     ###############
     # BUILD MODEL #
     ###############
