@@ -13,8 +13,9 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev,
     A placeholder fot the weights matrix of the graph.
     """
 
-    if train:
-        with tf.variable_scope(scope, reuse=False):
+    
+    with tf.variable_scope(scope, reuse=False):
+        if train:
             with tf.variable_scope('thetas'):
                 theta1 = tf.Variable(tf.random_normal([p], stddev=initialization_stddev), name='theta1')
                 theta2 = tf.Variable(tf.random_normal([p, p], stddev=initialization_stddev), name='theta2')
@@ -39,9 +40,9 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev,
                                             name='W_MLP_post_pooling_' + str(i)))
                     bs_post_pooling.append(tf.Variable(tf.random_normal([p], stddev=initialization_stddev),
                                             name='b_MLP_post_pooling_' + str(i)))
-    else:
-        # Unpack passed theta's recovered from training session.
-        theta1,theta2,theta3,theta4,theta5,theta6,theta7 = theta_list
+        else:
+            # Unpack passed theta's recovered from training session.
+            theta1,theta2,theta3,theta4,theta5,theta6,theta7 = theta_list
 
         # Define the mus
         # Loop over t
