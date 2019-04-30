@@ -5,7 +5,7 @@ import os
 import pickle
 
 class TSP_env:
-    def __init__(self, simulate=False, data_folder=None, replay_penalty=0):
+    def __init__(self, simulate=False, data_folder=None, replay_penalty=0, penalty=0):
         #self.data = data #we need dish
         #self.adjacency_matrices = adjacencies
         self.env_name = 'TSP'
@@ -14,6 +14,7 @@ class TSP_env:
         self.simulate = simulate
         self.data_loader(data_folder)
         self.graph = self.getGraph()
+        self.penalty = penalty
         self.number_nodes = len(self.graph)
         self.embedding_dimension = self.embedding.shape[1]
         self.state_shape = [self.number_nodes]
@@ -24,11 +25,9 @@ class TSP_env:
         if not self.simulate:
             self.data_paths = [os.path.join(data_folder, d) for d in os.listdir(data_folder)]
             self.num_graphs = len(self.data_paths)
-            self.penalty = 100
         else:
             self.data_paths = None
             self.num_graphs = 200
-            self.penalty = 0
     
     def getGraph(self):
         if self.simulate:
