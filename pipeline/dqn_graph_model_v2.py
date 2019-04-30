@@ -478,7 +478,6 @@ def test(session,
                 logz.log_tabular("ApproxRatio", mean_approx_ratio)
             logz.log_tabular("MaxReturn", best_mean_episode_reward)
             logz.log_tabular("Episodes", len(episode_total_rewards))
-            logz.log_tabular("Exploration", exploration.value(t))
             logz.dump_tabular()
 
             sys.stdout.flush()
