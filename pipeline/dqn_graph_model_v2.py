@@ -397,7 +397,7 @@ def test(sess, env, modelfile): # writen to look at a single test graph at a tim
                                       [None, env.number_nodes, env.number_nodes],
                                       name='graph_weights_ph')
     embedding_ph = tf.placeholder(tf.float32,
-                                      [None, env.number_nodes, env.embedding.shape()[1]],
+                                      [None, env.number_nodes, env.embedding_dimension],
                                       name='embedding_ph')
     # Q network
     q_func_net = q_func(x=obs_t_ph, # q function returns some sort of equation
