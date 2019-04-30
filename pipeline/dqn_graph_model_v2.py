@@ -366,16 +366,6 @@ def test(sess,
     saver =tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')
     saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/'))
 
-    # load theta's and layers from the saved session
-    prefix = "q_func"
-    theta_list = [tf.convert_to_tensor(sess.run(prefix + "/thetas/theta" + str(i) + ":0"),
-                    name='theta%d' % i) for i in range(1,8)]
-    Ws_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/W_MLP_pre_pooling_%d:0") for i in range(2)]
-    bs_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/b_MLP_pre_pooling_%d:0") for i in range(2)]
-    Ws_post_pooling = sess.run(prefix + "/pre_pooling_MLP/W_MLP_post_pooling_0:0")
-    bs_post_pooling = sess.run(prefix + "/pre_pooling_MLP/b_MLP_post_pooling_0:0")
-
-
     exp_name = env.env_name
     logz.configure_output_dir('data/' + exp_name + time.strftime('%m-%d-%Y-%H:%M:%s'))
     ###############
@@ -419,7 +409,7 @@ def test(sess,
                         w=graph_weights_ph,
                         embed=embedding_ph,
                         p=n_hidden_units, T=T,
-                        scope="q_func", reuse=False, train=False, theta_list=theta_list,
+                        scope="q_func", reuse=False, train=False, sess=sess,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
         
