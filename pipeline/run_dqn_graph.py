@@ -66,14 +66,14 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
     )
     env.close()
 
-def graph_test(sess,env,q_func,modelfile):
+def graph_test(session,env,q_func,modelfile):
     
     def stopping_criterion(env, t):
         # notice that here t is the number of steps of the wrapped env,
         # which is different from the number of steps in the underlying env
         return(env.is_done(env.state) and env.all_graphs_trained())
     
-    dqn.test(sess=sess, 
+    dqn.test(session=sess, 
              env=env, 
              q_func=Q_function_graph_model.Q_func,
              pre_pooling_mlp_layers=2,
@@ -96,7 +96,7 @@ def main(train=False,test=False,simulate=True,modelfile=None):
     elif test:
         with tf.Session() as sess:    
             env = tsp_env.TSP_env(simulate=simulate)
-            graph_test(sess=sess, 
+            graph_test(session=sess, 
                      env=env, 
                      q_func=Q_function_graph_model.Q_func,
                      modelfile=modelfile)
