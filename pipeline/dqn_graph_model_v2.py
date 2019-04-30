@@ -104,6 +104,7 @@ def learn(env,
     ###############
 
     input_shape = env.state_shape
+    embed_dim = env.embedding_dimension
     num_actions = env.num_actions
 
     # set up placeholders
@@ -190,6 +191,7 @@ def learn(env,
 
     # construct the replay buffer
     replay_buffer = replay_buffer_graph.ReplayBuffer(replay_buffer_size, obs_size=input_shape[0],
+                                                     embed_dim=embed_dim,
                                                      n_nodes=input_shape[0])
 
     # Model saver
