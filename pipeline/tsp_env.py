@@ -77,12 +77,14 @@ class TSP_env:
                     rew = -self.weight_matrix[self.right_node, action]
                 else:
                     rew = 0
+                    self.left_node = action
                 self.right_node = action
             else:
                 if self.left_node:
                     rew = -self.weight_matrix[action, self.left_node]
                 else:
                     rew = 0
+                    self.right_node = action
                 self.left_node = action
         else:
             rew = -self.replay_penalty
