@@ -45,10 +45,10 @@ def Q_func(x, adj, w, embed, p, T, initialization_stddev=None,
             prefix = "q_func"
             theta_list = [tf.convert_to_tensor(sess.run(prefix + "/thetas/theta" + str(i) + ":0"),
                             name='theta%d' % i) for i in range(1,8)]
-            Ws_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/W_MLP_pre_pooling_%d:0") for i in range(pre_pooling_mlp_layers)]
-            bs_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/b_MLP_pre_pooling_%d:0") for i in range(pre_pooling_mlp_layers)]
-            Ws_post_pooling = [sess.run(prefix + "/pre_pooling_MLP/W_MLP_post_pooling_%d:0") for i in range(post_pooling_mlp_layers)]
-            bs_post_pooling = [sess.run(prefix + "/pre_pooling_MLP/b_MLP_post_pooling_%d:0") for i in range(post_pooling_mlp_layers)]
+            Ws_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/W_MLP_pre_pooling_%d:0" % i) for i in range(pre_pooling_mlp_layers)]
+            bs_pre_pooling = [sess.run(prefix + "/pre_pooling_MLP/b_MLP_pre_pooling_%d:0" % i) for i in range(pre_pooling_mlp_layers)]
+            Ws_post_pooling = [sess.run(prefix + "/pre_pooling_MLP/W_MLP_post_pooling_%d:0" % i) for i in range(post_pooling_mlp_layers)]
+            bs_post_pooling = [sess.run(prefix + "/pre_pooling_MLP/b_MLP_post_pooling_%d:0" % i) for i in range(post_pooling_mlp_layers)]
             # Unpack passed theta's recovered from training session.
             theta1,theta2,theta3,theta4,theta5,theta6,theta7 = theta_list
 
