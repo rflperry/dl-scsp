@@ -53,7 +53,7 @@ class TSP_env:
                 pkl_dict = pickle.load(filehandle) 
 
             self.embedding = pkl_dict['embedding']
-            self.weight_matrix = pkl_dict['adjacency'] - penalty 
+            self.weight_matrix = pkl_dict['adjacency'] - self.penalty 
             self.adjacency_matrix = np.ones(self.weight_matrix.shape)
             np.fill_diagonal(self.adjacency_matrix, 0)
             self.optimal_solution = -len(pkl_dict['truth'])
