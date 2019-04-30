@@ -81,7 +81,8 @@ def main(train=False,test=False,simulate=True,modelfile=None):
     elif test:
         with tf.Session() as sess:    
             env = tsp_env.TSP_env(simulate=simulate)
-            dqn.test(sess, env, modelfile)
+            dqn.test(sess, env, q_func=Q_function_graph_model.Q_func, 
+                     modelfile=modelfile)
     else:
         print('Please select to train or test')
     
