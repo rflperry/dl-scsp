@@ -2,7 +2,7 @@ import numpy as np
 import networkx as nx
 import random
 import os
-import pickel
+import pickle
 
 class TSP_env:
     def __init__(self, simulate=False, data_folder=None, replay_penalty=0):
