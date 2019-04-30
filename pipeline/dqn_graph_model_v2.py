@@ -353,7 +353,14 @@ def learn(env,
 # at this point we should have a saved model...
 
 
-def test(sess, env, q_func, modelfile): # writen to look at a single test graph at a time...
+def test(sess, 
+         env, 
+         q_func,
+         pre_pooling_mlp_layers,
+         post_pooling_mlp_layers,
+         n_hidden_units,
+         T=4, 
+         modelfile): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     # Restore session
     saver =tf.train.import_meta_graph(tf.train.latest_checkpoint('/tmp/saved_models/') + '.meta')

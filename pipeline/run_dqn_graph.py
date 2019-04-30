@@ -81,7 +81,12 @@ def main(train=False,test=False,simulate=True,modelfile=None):
     elif test:
         with tf.Session() as sess:    
             env = tsp_env.TSP_env(simulate=simulate)
-            dqn.test(sess, env, q_func=Q_function_graph_model.Q_func, 
+            dqn.test(sess, 
+                     env, 
+                     q_func=Q_function_graph_model.Q_func,
+                     pre_pooling_mlp_layers=2,
+                     post_pooling_mlp_layers=1,
+                     n_hidden_units=-1, T=4, 
                      modelfile=modelfile)
     else:
         print('Please select to train or test')
