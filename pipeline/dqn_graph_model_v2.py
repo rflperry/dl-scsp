@@ -259,11 +259,13 @@ def learn(env,
 
         if len(observations) > n_steps_ahead:
             replay_buffer.store_transition(observations[-(n_steps_ahead + 1)], env.adjacency_matrix,
-                                           env.weight_matrix, action, reward, observations[-1], done, n_steps_ahead)
+                                           env.weight_matrix, env.embedding, 
+                                           action, reward, observations[-1], done, n_steps_ahead)
 
         if done and 1 < len(observations) <= n_steps_ahead:
             replay_buffer.store_transition(observations[0], env.adjacency_matrix, env.weight_matrix,
-                                           action, reward, observations[-1], done, len(observations) - 1)
+                                           env.embedding, action, reward, observations[-1], 
+                                           done, len(observations) - 1)
 
 
         # at this point, the environment should have been advanced one step (and
