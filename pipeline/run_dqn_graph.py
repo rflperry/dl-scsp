@@ -125,4 +125,4 @@ if __name__ == "__main__":
         simulate=args.simulate,
         folder=args.folder,
         modelfile=args.modelfile,
-        penalty=penalty)   
+        penalty=args.penalty)   
