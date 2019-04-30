@@ -411,7 +411,7 @@ def test(sess,
                         adj=adj_ph,
                         w=graph_weights_ph,
                         embed=embedding_ph,
-                        p=n_hidden_units, T=T, initialization_stddev=initialization_stddev,
+                        p=n_hidden_units, T=T,
                         scope="q_func", reuse=False, train=False, theta_list=theta_list,
                         pre_pooling_mlp_layers=pre_pooling_mlp_layers,
                         post_pooling_mlp_layers=post_pooling_mlp_layers)
