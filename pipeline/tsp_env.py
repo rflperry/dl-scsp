@@ -14,12 +14,10 @@ class TSP_env:
         self.simulate = simulate
         self.data_loader(data_folder)
         self.graph = self.getGraph()
-        #self.adjacency_matrices = adjacencies
         self.number_nodes = len(self.graph)
         self.embedding_dimension = self.getEmbedding().shape[1]
         self.state_shape = [self.number_nodes]
         self.num_actions = self.number_nodes
-        #self.adjacencies = self.getAdj_mat()
     
     # Loads the file paths and sets num graphs
     def data_loader(self, data_folder):
