@@ -438,6 +438,13 @@ def test(session,
 
         #####
 
+        mean_episode_reward      = -float('nan')
+        best_mean_episode_reward = -float('inf')
+
+        episode_total_rewards = []
+        episode_total_optimal_rewards = []
+        episode_total_at_random_rewards = []
+
         ### 4. Log progress
         # episode_rewards = get_wrapper_by_name(env, "Monitor").get_episode_rewards()
         mean_approx_ratio = 'not computed yet'
@@ -450,7 +457,7 @@ def test(session,
                                                 np.mean(np.array(episode_total_optimal_rewards)))
 
         if len(episode_total_rewards) > 0:
-            mean_episode_reward = np.mean(np.array(episode_total_rewards)[-burn:])
+            mean_episode_reward = np.mean(np.array(episode_total_rewards))
             mean_optimal_episode_reward = np.mean(np.array(episode_total_optimal_rewards))
             mean_at_random_episode_reward = np.mean(np.array(episode_total_at_random_rewards))
             if env.env_name == 'TSP':
