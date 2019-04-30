@@ -78,7 +78,8 @@ def graph_test(sess,env,q_func,modelfile):
              q_func=Q_function_graph_model.Q_func,
              pre_pooling_mlp_layers=2,
              post_pooling_mlp_layers=1,
-             n_hidden_units=-1, T=4, 
+             n_hidden_units=-1, T=4,
+             stopping_criterion=stopping_criterion, 
              modelfile=modelfile)
 
 import argparse

@@ -358,8 +358,8 @@ def test(sess,
          q_func,
          pre_pooling_mlp_layers,
          post_pooling_mlp_layers,
-         n_hidden_units,
-         T=4, 
+         n_hidden_units, T=4,
+         stopping_criterion=stopping_criterion, 
          modelfile='temp'): # writen to look at a single test graph at a time...
                         # currently a bunch of zeros
     # Restore session
