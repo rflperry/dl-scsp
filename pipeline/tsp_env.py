@@ -15,7 +15,7 @@ class TSP_env:
         self.data_loader(data_folder)
         self.graph = self.getGraph()
         self.number_nodes = len(self.graph)
-        self.embedding_dimension = self.getEmbedding().shape[1]
+        self.embedding_dimension = self.embedding.shape[1]
         self.state_shape = [self.number_nodes]
         self.num_actions = self.number_nodes
     
