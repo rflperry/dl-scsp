@@ -3,11 +3,12 @@ import numpy as np
 
 class ReplayBuffer:
 
-    def __init__(self, size, obs_size, n_nodes):
+    def __init__(self, size, embed_dim, obs_size, n_nodes):
         self.size = size
         self.obs = np.zeros([self.size, obs_size], dtype=np.float32)
         self.adj = np.zeros([self.size, n_nodes, n_nodes], dtype=np.float32)
         self.weight_matrix = np.zeros([self.size, n_nodes, n_nodes], dtype=np.float32)
+        self.embedding = np.zeros([self.size, n_nodes, embed_dim], dtype=np.float32)
         self.next_obs = np.zeros([self.size, obs_size], dtype=np.float32)
         self.actions = np.zeros([self.size], dtype=np.int32)
         self.rewards = np.zeros([self.size], dtype=np.float32)
@@ -17,10 +18,11 @@ class ReplayBuffer:
         self.next_idx = 0
 
 
-    def store_transition(self, obs, adj, weight_matrix, action, reward, next_obs, done, transition_length):
+    def store_transition(self, obs, adj, weight_matrix, embedding, action, reward, next_obs, done, transition_length):
         self.obs[self.next_idx] = obs
         self.adj[self.next_idx] = adj
         self.weight_matrix[self.next_idx] = weight_matrix
+        self.embedding[self.next_idx] = embedding
         self.actions[self.next_idx] = action
         self.rewards[self.next_idx] = reward
         self.next_obs[self.next_idx] = next_obs
@@ -41,6 +43,7 @@ class ReplayBuffer:
         return self.obs[idxes], \
                self.adj[idxes], \
                self.weight_matrix[idxes], \
+               self.embedding[idxes], \
                self.actions[idxes], \
                self.rewards[idxes], \
                self.next_obs[idxes], \

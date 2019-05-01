@@ -21,9 +21,8 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
 
     lr_multiplier = 1.0
     # From dqn_utils
-    lr_schedule = LinearSchedule(schedule_timesteps = num_iterations, 
-                                 final_p = 0.0, 
-                                 initial_p=1.0)
+    lr_schedule = ExponentialSchedule(time_constant = num_iterations, 
+                                      final_p = 0.001)
 
     optimizer = dqn.OptimizerSpec(
         constructor=tf.train.AdamOptimizer,
@@ -37,21 +36,20 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
         # which is different from the number of steps in the underlying env
         return(env.is_done(env.state) and env.all_graphs_trained())
 
-    exploration_schedule = LinearSchedule(schedule_timesteps = num_iterations, 
-                                 final_p = 0.0, 
-                                 initial_p=1.0)
+    exploration_schedule = ExponentialSchedule(time_constant = num_iterations, 
+                                               final_p = 0.001) 
 
     dqn.learn(
         env,
         q_func=q_func,
         pre_pooling_mlp_layers=2,
         post_pooling_mlp_layers=1,
-        n_hidden_units=32, T=4,
+        n_hidden_units=-1, T=4,
         initialization_stddev=1e-3,
         exploration=exploration_schedule,
         stopping_criterion=stopping_criterion,
-        replay_buffer_size=100,
-        batch_size=16,
+        replay_buffer_size=10000,
+        batch_size=64,
         gamma=0.99,
         learning_starts=50,
         learning_freq=2,
@@ -60,36 +58,69 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
         double_DQN=True,
         n_steps_ahead=3,
         learning_rate=1e-4,
-        LOG_EVERY_N_STEPS = 1000,
-        burn_in_period=50, filename=modelfile
+        LOG_EVERY_N_STEPS = 200,
+        burn_in_period=50, 
+        filename=modelfile
     )
     env.close()
 
+def graph_test(session,env,q_func,modelfile):
+    
+    def stopping_criterion(env, t):
+        # notice that here t is the number of steps of the wrapped env,
+        # which is different from the number of steps in the underlying env
+        return(env.is_done(env.state) and env.all_graphs_trained())
+    
+    dqn.test(session=session, 
+             env=env, 
+             q_func=Q_function_graph_model.Q_func,
+             pre_pooling_mlp_layers=2,
+             post_pooling_mlp_layers=1,
+             n_hidden_units=-1, T=4,
+             stopping_criterion=stopping_criterion, 
+             modelfile=modelfile)
 
 import argparse
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--train", help="true to train the model, false if test",
-                        action="store_true")
-    parser.add_argument("modelfile", type=str, help="folder name to save models")
-    args = parser.parse_args()
-    
+def main(train=False,test=False,simulate=False,folder=None,modelfile=None,penalty=0):
     num_timesteps = 100000
-    modelfile = args.modelfile
-    if args.train:
-        with tf.Session() as sess:
-            sess.run(initialize_all_variables())
-            env = tsp_env.TSP_env(simulate=True)
-            graph_learn(env, num_timesteps=num_timesteps,
-            q_func=Q_function_graph_model.Q_func, modelfile)
+    if train:
+        #with tf.Session() as sess:
+            #sess.run(initialize_all_variables())
+        env = tsp_env.TSP_env(simulate=simulate, data_folder=folder,penalty=penalty)
+        graph_learn(env, num_timesteps=num_timesteps,
+        q_func=Q_function_graph_model.Q_func, modelfile=modelfile)
 
-    else:
+    elif test:
         with tf.Session() as sess:    
-            saver = tf.train.import_meta_graph('/tmp/saved_models/' + modelfile + '.meta')
-            saver.restore(sess,tf.train.latest_checkpoint('/tmp/saved_models/')) 
-            env = tsp_env.TSP_env(simulate=True)
-            test(sess, env)
+            env = tsp_env.TSP_env(simulate=simulate, data_folder=folder, penalty=penalty)
+            graph_test(session=sess, 
+                     env=env, 
+                     q_func=Q_function_graph_model.Q_func,
+                     modelfile=modelfile)
+    else:
+        print('Please select to train or test')
     
 if __name__ == "__main__":
-    main()   
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--train", help="true to train the model",
+                        action="store_true")
+    parser.add_argument("-t", "--test", help="true to test the model",
+                        action="store_true")
+    parser.add_argument("-s", "--simulate", help="true if run on simulated data, false for real data",
+                        action="store_true")
+    parser.add_argument("-f", "--folder", help="folder with data to test or train",
+                         type=str, dest='folder',default=None,
+                          metavar='FOLDER')
+    parser.add_argument("-p", "--length", help="length of substrings",
+                         type=int, dest='penalty', default=0, metavar='STRING_length')
+    parser.add_argument("--modelfile", help="file name to save models",
+                        type=str, dest='modelfile', default='TSP', metavar='MODELFILE')
+    args = parser.parse_args()
+    
+    main(train=args.train,
+        test=args.test,
+        simulate=args.simulate,
+        folder=args.folder,
+        modelfile=args.modelfile,
+        penalty=args.penalty)   
