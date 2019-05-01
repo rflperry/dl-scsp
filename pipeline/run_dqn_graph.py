@@ -22,7 +22,7 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
     lr_multiplier = 1.0
     # From dqn_utils
     lr_schedule = ExponentialSchedule(time_constant = num_iterations, 
-                                      final_p = 0.001, 
+                                      final_p = 0.001)
 
     optimizer = dqn.OptimizerSpec(
         constructor=tf.train.AdamOptimizer,
@@ -37,7 +37,7 @@ def graph_learn(env, num_timesteps, q_func, modelfile):
         return(env.is_done(env.state) and env.all_graphs_trained())
 
     exploration_schedule = ExponentialSchedule(time_constant = num_iterations, 
-                                               final_p = 0.001, 
+                                               final_p = 0.001) 
 
     dqn.learn(
         env,
