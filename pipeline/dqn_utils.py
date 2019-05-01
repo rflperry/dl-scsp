@@ -100,7 +100,7 @@ class ExponentialSchedule(object):
         return(np.exp(-t / self.time_constant) + final_p)
 
 class LinearSchedule(object):
-    def __init__(self, schedule_timesteps, rate, initial_p=1.0):
+    def __init__(self, schedule_timesteps, final_p, initial_p=1.0):
         """Linear interpolation between initial_p and final_p over
         schedule_timesteps. After this many timesteps pass final_p is
         returned.
