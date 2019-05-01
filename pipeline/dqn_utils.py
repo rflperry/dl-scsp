@@ -97,7 +97,7 @@ class ExponentialSchedule(object):
 
     def value(self, t):
         """See Schedule.value"""
-        return(np.exp(-t / self.time_constant) + final_p)
+        return(np.exp(-t / self.time_constant) + self.final_p)
 
 class LinearSchedule(object):
     def __init__(self, schedule_timesteps, final_p, initial_p=1.0):
