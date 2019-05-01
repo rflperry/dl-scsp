@@ -82,8 +82,25 @@ class PiecewiseSchedule(object):
         assert self._outside_value is not None
         return self._outside_value
 
+class ExponentialSchedule(object):
+    def __init__(self, time_constant, final_p=0.01):
+        """Exponential decay interpolation
+        Parameters
+        ----------
+        time_constant: int
+            Number of timesteps for 1 time constant
+        final_p: float
+            final output value asymptote
+        """
+        self.time_constant = time_constant
+        self.final_p = final_p
+
+    def value(self, t):
+        """See Schedule.value"""
+        return(np.exp(-t / self.time_constant) + final_p)
+
 class LinearSchedule(object):
-    def __init__(self, schedule_timesteps, final_p, initial_p=1.0):
+    def __init__(self, schedule_timesteps, rate, initial_p=1.0):
         """Linear interpolation between initial_p and final_p over
         schedule_timesteps. After this many timesteps pass final_p is
         returned.
